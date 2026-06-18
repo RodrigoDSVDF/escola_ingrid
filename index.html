@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leo e o Castelo da Divisão Mágica - Preenchimento Ativo</title>
+    <title>Leo e o Castelo da Divisão Mágica - Ferramenta Completa</title>
     <!-- Tailwind CSS para design moderno e responsivo -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts para tipografia infantil e acolhedora -->
@@ -52,12 +52,7 @@
             }
         }
 
-        /* Animação de input correto/errado */
-        .input-correct {
-            border-color: #10b981 !important;
-            background-color: #ecfdf5 !important;
-            color: #065f46 !important;
-        }
+        /* Animação do input ativo */
         .input-active {
             border-color: #3b82f6 !important;
             box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
@@ -79,7 +74,7 @@
             CASTELO DA DIVISÃO MÁGICA
         </h1>
         <p class="text-xs md:text-base mt-2 font-medium text-emerald-50">
-            Aprenda digitando e resolvendo na lousa com o dragão Leo! 🐉✨
+            A ferramenta completa para dividir qualquer número passo a passo! 🐉✨
         </p>
     </header>
 
@@ -104,7 +99,7 @@
                 <div class="w-full bg-slate-100 rounded-full h-6 p-1 border-2 border-slate-200 shadow-inner">
                     <div id="xp-bar" class="bg-gradient-to-r from-yellow-400 to-amber-500 h-full rounded-full transition-all duration-500" style="width: 5%"></div>
                 </div>
-                <p class="text-xs text-slate-400 mt-2 font-medium">Preencha a lousa ativa, jogue no canhão ou vença na Arena para evoluir o Leo! 🚀</p>
+                <p class="text-xs text-slate-400 mt-2 font-medium">Resolva as contas na lousa inteligente ou brinque com o canhão para evoluir! 🚀</p>
             </div>
         </div>
     </div>
@@ -113,7 +108,7 @@
     <nav class="max-w-4xl w-full mx-auto px-4 mt-6 grid grid-cols-3 gap-2 md:gap-4">
         <button onclick="irParaAba('armadilha')" id="tab-btn-armadilha" class="py-3 px-1 md:px-4 rounded-2xl font-black text-xs md:text-base flex flex-col md:flex-row items-center justify-center gap-2 transition-all shadow-md bg-emerald-500 text-white transform -translate-y-1">
             <span class="text-xl">✍️</span>
-            <span>Preencher Lousa</span>
+            <span>Lousa Mágica</span>
         </button>
         <button onclick="irParaAba('canhao')" id="tab-btn-canhao" class="py-3 px-1 md:px-4 rounded-2xl font-black text-xs md:text-base flex flex-col md:flex-row items-center justify-center gap-2 transition-all shadow-md bg-white text-slate-500 hover:bg-emerald-50">
             <span class="text-xl">🔫</span>
@@ -128,108 +123,74 @@
     <!-- PAINEL PRINCIPAL -->
     <main class="max-w-4xl w-full mx-auto px-4 flex-grow my-6">
 
-        <!-- ================= MÓDULO 1: LOUSA DE PREENCHIMENTO ATIVO ================= -->
-        <section id="tab-armadilha" class="space-y-6">
+        <!-- ================= MÓDULO 1: LOUSA DINÂMICA COMPLETA ================= -->
+        <section id="tab-armadilha" class="space-y-6 block">
             <div class="bg-white rounded-3xl p-6 border-4 border-emerald-300 shadow-xl">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4 border-b-2 border-emerald-100 pb-3">
-                    <div>
-                        <h3 class="text-2xl font-black text-emerald-700 flex items-center gap-2">
-                            <i class="fa-solid fa-pen-to-square text-emerald-500"></i>
-                            Lousa Interativa: Mão na Massa!
-                        </h3>
-                        <p class="text-slate-500 text-sm">Preencha cada etapa da conta de <strong>123 ÷ 6</strong> diretamente na grade!</p>
+                
+                <!-- Criador de Conta Dinâmica -->
+                <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-4 mb-6">
+                    <h3 class="text-lg font-black text-emerald-800 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-calculator"></i> Crie sua própria conta de divisão!
+                    </h3>
+                    <div class="flex flex-col md:flex-row items-center gap-4">
+                        <input type="text" id="custom-divd" placeholder="Dividendo (ex: 123)" class="w-full md:w-1/3 text-center font-bold p-3 rounded-xl border-2 border-emerald-300 focus:outline-none focus:border-emerald-600">
+                        <span class="text-3xl font-black text-slate-400">÷</span>
+                        <input type="text" id="custom-divs" placeholder="Divisor (ex: 6)" class="w-full md:w-1/3 text-center font-bold p-3 rounded-xl border-2 border-emerald-300 focus:outline-none focus:border-emerald-600">
+                        <button onclick="iniciarContaDinamica()" class="w-full md:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all flex-grow">
+                            Montar Lousa 🚀
+                        </button>
                     </div>
-                    <button onclick="reiniciarLousaAtiva()" class="bg-amber-100 hover:bg-amber-200 text-amber-800 text-xs font-bold py-2 px-4 rounded-xl transition-all">
-                        <i class="fa-solid fa-rotate-left mr-1"></i> Reiniciar Conta
-                    </button>
+                    <p class="text-xs text-emerald-600 mt-2 font-medium">A Lousa aceita números inteiros. Se precisar dividir com decimais, use o Canhão Sumi-Vírgula primeiro!</p>
                 </div>
 
                 <!-- Painel Principal de Preenchimento -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-4 md:p-6 rounded-3xl border-2 border-slate-100">
                     
-                    <!-- LADO ESQUERDO: A GRADE MATEMÁTICA DE PREENCHIMENTO -->
-                    <div class="bg-slate-900 text-white p-6 rounded-2xl font-mono shadow-2xl relative flex flex-col justify-between min-h-[360px]">
-                        <span class="absolute top-2 left-4 text-[10px] text-slate-500 uppercase tracking-widest font-sans">Caderno de Exercício</span>
+                    <!-- LADO ESQUERDO: A LOUSA NEGRA DINÂMICA -->
+                    <div class="bg-slate-900 text-white p-6 rounded-2xl font-mono shadow-2xl relative flex flex-col justify-start min-h-[400px]">
+                        <span class="absolute top-2 left-4 text-[10px] text-slate-500 uppercase tracking-widest font-sans">Caderno Passo a Passo</span>
                         
-                        <div class="flex justify-center items-start gap-6 mt-6">
+                        <div class="flex justify-center items-start gap-6 mt-8">
                             
-                            <!-- DIVIDENDO E SEUS ENTRADAS DE SUBTRAÇÃO -->
-                            <div class="text-right text-2xl font-bold space-y-2 flex flex-col items-end">
-                                <!-- Dividendo Principal -->
-                                <div class="flex items-center gap-1">
-                                    <span class="text-slate-500 text-sm font-sans mr-2">Arquinho no 12! -></span>
-                                    <span class="text-white tracking-widest text-3xl font-extrabold">123</span>
-                                </div>
-                                
-                                <!-- Passo 1: Subtração do 12 -->
-                                <div id="lousa-row-sub1" class="flex items-center gap-1">
-                                    <span class="text-red-400 text-lg mr-1">-</span>
-                                    <input type="text" id="input-sub1" maxlength="2" disabled class="w-12 text-center text-xl bg-slate-800 border-2 border-slate-700 text-yellow-300 rounded p-1 font-mono focus:outline-none">
-                                </div>
-                                
-                                <!-- Passo 1: Resto (03) -->
-                                <div id="lousa-row-resto1" class="border-t-2 border-slate-700 pt-1 flex items-center gap-1 w-full justify-end">
-                                    <input type="text" id="input-resto1" maxlength="2" disabled class="w-12 text-center text-xl bg-slate-800 border-2 border-slate-700 text-slate-300 rounded p-1 font-mono focus:outline-none">
-                                </div>
-
-                                <!-- Passo 2: Subtração da Armadilha (0) -->
-                                <div id="lousa-row-sub2" class="flex items-center gap-1 hidden">
-                                    <span class="text-red-400 text-lg mr-1">-</span>
-                                    <input type="text" id="input-sub2" maxlength="1" disabled class="w-8 text-center text-xl bg-slate-800 border-2 border-slate-700 text-yellow-300 rounded p-1 font-mono focus:outline-none">
-                                </div>
-
-                                <!-- Passo 2: Resto com zero transformado (30) -->
-                                <div id="lousa-row-resto2" class="border-t-2 border-slate-700 pt-1 flex items-center gap-1 hidden">
-                                    <span class="text-xs text-emerald-400 font-sans mr-1">Vira Décimo! -></span>
-                                    <input type="text" id="input-resto2" maxlength="2" disabled class="w-12 text-center text-xl bg-slate-800 border-2 border-slate-700 text-emerald-300 rounded p-1 font-mono focus:outline-none">
-                                </div>
-
-                                <!-- Passo 3: Subtração Decimal (30) -->
-                                <div id="lousa-row-sub3" class="flex items-center gap-1 hidden">
-                                    <span class="text-red-400 text-lg mr-1">-</span>
-                                    <input type="text" id="input-sub3" maxlength="2" disabled class="w-12 text-center text-xl bg-slate-800 border-2 border-slate-700 text-yellow-300 rounded p-1 font-mono focus:outline-none">
-                                </div>
-
-                                <!-- Passo 3: Resto Final (0) -->
-                                <div id="lousa-row-resto3" class="border-t-2 border-slate-700 pt-1 flex items-center gap-1 hidden w-full justify-end">
-                                    <input type="text" id="input-resto3" maxlength="1" disabled class="w-8 text-center text-xl bg-slate-800 border-2 border-slate-700 text-emerald-400 rounded p-1 font-mono focus:outline-none">
-                                </div>
+                            <!-- DIVIDENDO E COLUNA DINÂMICA DE SUBTRAÇÕES/RESTOS -->
+                            <div class="text-right text-2xl font-bold space-y-1 flex flex-col items-end w-1/2 pr-2" id="col-dividend">
+                                <!-- Preenchido dinamicamente via JS -->
                             </div>
                             
                             <!-- CHAVE DA DIVISÃO -->
-                            <div class="border-l-4 border-t-4 border-emerald-400 pl-4 pt-1 text-left min-w-[120px]">
+                            <div class="border-l-4 border-t-4 border-emerald-400 pl-4 pt-2 text-left w-1/2">
                                 <div class="text-slate-500 text-[10px] font-sans uppercase">Divisor</div>
-                                <div class="text-white text-3xl font-black mb-4">6</div>
+                                <div id="div-divisor" class="text-white text-3xl font-black mb-6 tracking-widest">6</div>
                                 
                                 <div class="text-slate-500 text-[10px] font-sans uppercase">Quociente</div>
-                                <div class="flex items-center gap-1">
-                                    <!-- Campos do Quociente Dinâmicos -->
-                                    <input type="text" id="input-q-inteiro" placeholder="?" maxlength="2" class="w-10 text-center text-2xl font-black bg-slate-800 border-2 border-slate-600 text-yellow-300 rounded p-1 focus:outline-none input-active">
-                                    <span id="lousa-comma" class="text-3xl text-pink-500 font-extrabold hidden">,</span>
-                                    <input type="text" id="input-q-decimal" maxlength="1" disabled class="w-8 text-center text-2xl font-black bg-slate-800 border-2 border-slate-700 text-yellow-300 rounded p-1 focus:outline-none hidden">
+                                <div id="div-quociente" class="text-yellow-300 text-3xl font-extrabold tracking-widest flex items-end min-h-[2rem]">
+                                    <!-- Preenchido dinamicamente via JS -->
                                 </div>
                             </div>
 
                         </div>
-
-                        <!-- Mini Painel de Instruções de Digitação -->
-                        <div id="lousa-helper" class="text-xs text-white bg-slate-800 p-3 rounded-lg mt-4 font-sans text-center border border-slate-700">
-                            Preencha o primeiro campo destacado em azul para começar!
-                        </div>
                     </div>
 
-                    <!-- LADO DIREITO: INSTRUÇÕES DINÂMICAS DO DRAGÃO LEO -->
+                    <!-- LADO DIREITO: INSTRUÇÕES E TECLADO -->
                     <div class="flex flex-col justify-between space-y-4">
-                        <div class="bg-emerald-50 border-2 border-emerald-200 p-5 rounded-3xl relative">
+                        <div class="bg-emerald-50 border-2 border-emerald-200 p-5 rounded-3xl relative shadow-inner">
                             <div class="absolute -top-4 -left-4 text-3xl">🐉</div>
                             <h4 class="font-extrabold text-emerald-800 mb-2">Leo está te guiando:</h4>
-                            <p class="text-sm text-slate-600 leading-relaxed" id="instrucao-lousa">
-                                Vamos dividir 12 por 6. Quantas vezes o 6 cabe no 12? Digite a resposta no quociente!
+                            <p class="text-sm text-slate-700 leading-relaxed font-medium" id="instrucao-lousa">
+                                Insira os valores para começarmos a calcular juntos!
+                            </p>
+                            <p class="text-xs font-bold text-emerald-600 mt-3 bg-emerald-100 p-2 rounded-lg" id="lousa-helper">
+                                Dica mágica vai aparecer aqui!
                             </p>
                         </div>
 
-                        <!-- Teclado Numérico Virtual para Dispositivos Móveis / Touch -->
-                        <div class="bg-white p-4 rounded-2xl border border-slate-200 grid grid-cols-3 gap-2">
+                        <!-- O Único Input Master para Digitação Segura -->
+                        <div>
+                            <input type="text" id="master-input" class="w-full text-center text-3xl font-black p-4 rounded-2xl border-4 border-blue-400 focus:outline-none input-active text-blue-800 bg-white" placeholder="?" readonly>
+                        </div>
+
+                        <!-- Teclado Numérico Virtual (Perfeito com a vírgula) -->
+                        <div class="bg-white p-3 rounded-2xl border border-slate-200 grid grid-cols-3 gap-2">
                             <button onclick="pressVirtualKey('1')" class="bg-slate-100 hover:bg-slate-200 py-3 rounded-xl font-bold active:scale-95 text-lg">1</button>
                             <button onclick="pressVirtualKey('2')" class="bg-slate-100 hover:bg-slate-200 py-3 rounded-xl font-bold active:scale-95 text-lg">2</button>
                             <button onclick="pressVirtualKey('3')" class="bg-slate-100 hover:bg-slate-200 py-3 rounded-xl font-bold active:scale-95 text-lg">3</button>
@@ -239,14 +200,14 @@
                             <button onclick="pressVirtualKey('7')" class="bg-slate-100 hover:bg-slate-200 py-3 rounded-xl font-bold active:scale-95 text-lg">7</button>
                             <button onclick="pressVirtualKey('8')" class="bg-slate-100 hover:bg-slate-200 py-3 rounded-xl font-bold active:scale-95 text-lg">8</button>
                             <button onclick="pressVirtualKey('9')" class="bg-slate-100 hover:bg-slate-200 py-3 rounded-xl font-bold active:scale-95 text-lg">9</button>
-                            <button onclick="pressVirtualKey(',')" class="bg-pink-100 hover:bg-pink-200 text-pink-700 py-3 rounded-xl font-black active:scale-95 text-lg">,</button>
+                            <button onclick="pressVirtualKey(',')" class="bg-pink-100 hover:bg-pink-200 text-pink-700 py-3 rounded-xl font-black active:scale-95 text-2xl shadow-sm">,</button>
                             <button onclick="pressVirtualKey('0')" class="bg-slate-100 hover:bg-slate-200 py-3 rounded-xl font-bold active:scale-95 text-lg">0</button>
-                            <button onclick="pressVirtualKey('delete')" class="bg-red-100 hover:bg-red-200 text-red-700 py-3 rounded-xl font-bold active:scale-95 text-sm"><i class="fa-solid fa-backspace"></i> Apagar</button>
+                            <button onclick="pressVirtualKey('delete')" class="bg-red-100 hover:bg-red-200 text-red-700 py-3 rounded-xl font-bold active:scale-95 text-sm"><i class="fa-solid fa-backspace"></i></button>
                         </div>
 
                         <!-- Botão de Confirmação -->
                         <div>
-                            <button id="btn-validar-lousa" onclick="validarEtapaLousa()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-4 px-6 rounded-2xl shadow-md active:scale-95 transition-all text-lg flex items-center justify-center gap-2">
+                            <button id="btn-validar-lousa" onclick="validarPassoDinamico()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-4 px-6 rounded-2xl shadow-md active:scale-95 transition-all text-lg flex items-center justify-center gap-2">
                                 <span>Verificar Meu Passo</span> <i class="fa-solid fa-circle-check"></i>
                             </button>
                         </div>
@@ -350,7 +311,7 @@
                     </div>
                     
                     <div class="grid grid-cols-2 gap-3">
-                        <button onclick="verificarResposta()" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-black py-4 rounded-2xl shadow-md transition-all text-sm md:text-base">
+                        <button onclick="verificarQuiz()" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-black py-4 rounded-2xl shadow-md transition-all text-sm md:text-base">
                             Enviar Resposta! 🎯
                         </button>
                         <button onclick="pularPergunta()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-500 font-bold py-4 rounded-2xl transition-all text-xs md:text-sm">
@@ -431,7 +392,7 @@
             const container = document.getElementById('confetti-container');
             const colors = ['#34d399', '#6ee7b7', '#a7f3d0', '#60a5fa', '#3b82f6', '#fbbf24'];
             
-            for (let i = 0; i < 35; i++) {
+            for (let i = 0; i < 40; i++) {
                 const conf = document.createElement('div');
                 conf.className = 'confetti';
                 conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
@@ -447,7 +408,7 @@
 
         // --- SISTEMA GLOBAL DE XP E EVOLUÇÃO ---
         let xp = 0;
-        let petState = 0; // 0 = Ovo, 1 = Bebê, 2 = Jovem, 3 = Mestre
+        let petState = 0;
 
         function ganharXP(val) {
             xp += val;
@@ -473,31 +434,23 @@
             bar.style.width = Math.max(5, xp) + '%';
 
             if (petState === 0) {
-                avatar.innerText = "🥚";
-                name.innerText = "Ovo do Leo";
-                level.innerText = "Fase: Ovo";
+                avatar.innerText = "🥚"; name.innerText = "Ovo do Leo"; level.innerText = "Fase: Ovo";
             } else if (petState === 1) {
-                avatar.innerText = "🦖";
-                name.innerText = "Leo Bebê";
-                level.innerText = "Fase: Bebê";
+                avatar.innerText = "🦖"; name.innerText = "Leo Bebê"; level.innerText = "Fase: Bebê";
             } else if (petState === 2) {
-                avatar.innerText = "🦎";
-                name.innerText = "Leo Jovem";
-                level.innerText = "Fase: Jovem Aprendiz";
+                avatar.innerText = "🦎"; name.innerText = "Leo Jovem"; level.innerText = "Fase: Aprendiz";
             } else {
-                avatar.innerText = "🐉";
-                name.innerText = "Mestre Leo";
-                level.innerText = "Fase: Mestre da Divisão";
+                avatar.innerText = "🐉"; name.innerText = "Mestre Leo"; level.innerText = "Fase: Mestre";
             }
         }
 
         function falarComLeo() {
             playSound('click');
             const falas = [
-                "Você sabia que a vírgula serve para separar os décimos? 🎯",
-                "Estou ansioso para quebrar a armadilha do zero com você! ⚠️",
-                "Dízimas periódicas têm uma linha em cima! 👑",
-                "Divisão com vírgula de cabeça é fácil quando igualamos as casas!"
+                "A vírgula serve para separar os décimos! 🎯",
+                "Estou ansioso para dividir com você! ⚠️",
+                "Divisão com vírgula é fácil quando igualamos as casas!",
+                "Não esqueça de subtrair o zero quando o número não couber!"
             ];
             falarComLeoRapido(falas[Math.floor(Math.random() * falas.length)]);
         }
@@ -510,10 +463,16 @@
         }
 
         // --- SISTEMA DE SELEÇÃO DE ABAS ---
+        let currentTab = 'armadilha';
         function irParaAba(abaId) {
             playSound('click');
-            document.querySelectorAll('section').forEach(sec => sec.classList.add('hidden'));
+            currentTab = abaId;
+            document.querySelectorAll('section').forEach(sec => {
+                sec.classList.remove('block');
+                sec.classList.add('hidden');
+            });
             document.getElementById(`tab-${abaId}`).classList.remove('hidden');
+            document.getElementById(`tab-${abaId}`).classList.add('block');
             
             document.querySelectorAll('nav button').forEach(btn => {
                 btn.className = "py-3 px-1 md:px-4 rounded-2xl font-black text-xs md:text-base flex flex-col md:flex-row items-center justify-center gap-2 transition-all shadow-md bg-white text-slate-500 hover:bg-emerald-50";
@@ -523,305 +482,285 @@
             activeBtn.className = "py-3 px-1 md:px-4 rounded-2xl font-black text-xs md:text-base flex flex-col md:flex-row items-center justify-center gap-2 transition-all shadow-md bg-emerald-500 text-white transform -translate-y-1";
         }
 
-        // --- LÓGICA DO MÓDULO 1: LOUSA DE PREENCHIMENTO ATIVO ---
-        /*
-          State Machine para a Divisão Interativa de 123 / 6:
-          Faremos 8 etapas nas quais o usuário digita nos inputs correspondentes:
-          
-          - Etapa 0: Digitar "2" no quociente (12 / 6 = 2)
-            Active input: 'input-q-inteiro'
-          - Etapa 1: Digitar "12" no campo de subtração (2 * 6 = 12)
-            Active input: 'input-sub1'
-          - Etapa 2: Digitar "03" ou "3" no campo de resto (12 - 12 = 0, desce o 3)
-            Active input: 'input-resto1'
-          - Etapa 3: Digitar "0" no quociente (3 / 6 = 0) -> ARMADILHA!
-            Active input: 'input-q-inteiro' (deve virar "20")
-          - Etapa 4: Digitar "0" no campo de subtração (0 * 6 = 0)
-            Active input: 'input-sub2'
-          - Etapa 5: Digitar "," para começar a parte decimal!
-            O usuário deve digitar "," ou clicar no botão decimal. Isso ativa o 'input-q-decimal' e adiciona a vírgula.
-          - Etapa 6: Digitar "30" no resto transformado
-            Active input: 'input-resto2'
-          - Etapa 7: Digitar "5" no quociente decimal (30 / 6 = 5)
-            Active input: 'input-q-decimal'
-          - Etapa 8: Digitar "30" na subtração final
-            Active input: 'input-sub3'
-          - Etapa 9: Digitar "0" no resto final
-            Active input: 'input-resto3'
-        */
 
-        let activeLousaState = 0;
-        let activeFocusedInputId = 'input-q-inteiro';
+        // --- LÓGICA DO MÓDULO 1: LOUSA DINÂMICA COMPLETA ---
+        let dynamicSteps = [];
+        let activeStepIndex = 0;
 
-        function reiniciarLousaAtiva() {
+        function iniciarContaDinamica() {
             playSound('click');
-            activeLousaState = 0;
-            
-            // Reset de visibilidade de linhas
-            document.getElementById('lousa-row-sub2').classList.add('hidden');
-            document.getElementById('lousa-row-resto2').classList.add('hidden');
-            document.getElementById('lousa-row-sub3').classList.add('hidden');
-            document.getElementById('lousa-row-resto3').classList.add('hidden');
-            document.getElementById('lousa-comma').classList.add('hidden');
-            document.getElementById('input-q-decimal').classList.add('hidden');
+            const d1Str = document.getElementById('custom-divd').value.trim();
+            const d2Str = document.getElementById('custom-divs').value.trim();
 
-            // Limpar valores
-            const inputs = ['input-q-inteiro', 'input-q-decimal', 'input-sub1', 'input-resto1', 'input-sub2', 'input-resto2', 'input-sub3', 'input-resto3'];
-            inputs.forEach(id => {
-                const el = document.getElementById(id);
-                el.value = '';
-                el.disabled = true;
-                el.className = el.className.replace('input-correct', '').replace('input-active', '').trim();
-            });
-
-            // Reconfigurar primeiro input ativo
-            const firstInput = document.getElementById('input-q-inteiro');
-            firstInput.disabled = false;
-            firstInput.classList.add('input-active');
-            firstInput.placeholder = "?";
-            activeFocusedInputId = 'input-q-inteiro';
-
-            document.getElementById('lousa-helper').innerText = "Comece digitando o quociente para 12 ÷ 6 no campo azul destacado!";
-            document.getElementById('instrucao-lousa').innerHTML = "Vamos dividir 12 por 6. Quantas vezes o 6 cabe no 12? Digite a resposta no quociente!";
-            document.getElementById('btn-validar-lousa').innerHTML = "<span>Verificar Meu Passo</span> <i class='fa-solid fa-circle-check'></i>";
-        }
-
-        function setInputActive(nextId, placeholder = "?") {
-            // Desativar anterior
-            const prev = document.getElementById(activeFocusedInputId);
-            prev.disabled = true;
-            prev.classList.remove('input-active');
-
-            // Ativar próximo
-            activeFocusedInputId = nextId;
-            const next = document.getElementById(nextId);
-            next.disabled = false;
-            next.placeholder = placeholder;
-            next.classList.add('input-active');
-            next.focus();
-        }
-
-        function setInputCorrect(id) {
-            const el = document.getElementById(id);
-            el.classList.remove('input-active');
-            el.classList.add('input-correct');
-            el.disabled = true;
-        }
-
-        // Teclado virtual
-        function pressVirtualKey(key) {
-            playSound('click');
-            const activeInput = document.getElementById(activeFocusedInputId);
-            if (!activeInput) return;
-
-            if (key === 'delete') {
-                activeInput.value = activeInput.value.slice(0, -1);
-            } else if (key === ',') {
-                // Se o usuário clicar na vírgula durante o passo de transição decimal
-                if (activeLousaState === 5) {
-                    validarEtapaLousa();
-                } else {
-                    falarComLeoRapido("Ainda não é hora da vírgula! Faça as divisões inteiras primeiro.");
-                }
-            } else {
-                if (activeInput.value.length < activeInput.maxLength) {
-                    activeInput.value += key;
-                }
-            }
-        }
-
-        function validarEtapaLousa() {
-            const activeInput = document.getElementById(activeFocusedInputId);
-            const val = activeInput.value.trim();
-            const helper = document.getElementById('lousa-helper');
-            const instr = document.getElementById('instrucao-lousa');
-
-            if (val === "") {
-                playSound('fail');
-                falarComLeoRapido("Escreva o número no campo destacado em azul!");
+            if (d1Str === "" || d2Str === "") {
+                falarComLeoRapido("Preencha o dividendo e o divisor primeiro!");
                 return;
             }
 
-            // ETAPA 0: Quociente de 12 / 6 (Espera: 2)
-            if (activeLousaState === 0) {
-                if (val === "2") {
-                    playSound('success');
-                    setInputCorrect('input-q-inteiro');
-                    ganharXP(10);
-                    
-                    activeLousaState = 1;
-                    setInputActive('input-sub1');
-                    helper.innerText = "Excelente! Agora coloque quanto subtraímos de 12.";
-                    instr.innerHTML = "Muito bem! 2 × 6 = 12. Digite <strong>12</strong> embaixo do dividendo para fazermos a subtração!";
-                } else {
-                    playSound('fail');
-                    falarComLeoRapido("Quantas vezes o 6 cabe no 12? Dica: 2 × 6 = 12.");
-                }
+            if (d1Str.includes(',') || d1Str.includes('.') || d2Str.includes(',') || d2Str.includes('.')) {
+                falarComLeoRapido("A Lousa é para números inteiros! Se tiver vírgula, use o Canhão Sumi-Vírgula!");
+                return;
             }
-            // ETAPA 1: Subtração 12 (Espera: 12)
-            else if (activeLousaState === 1) {
-                if (val === "12") {
-                    playSound('success');
-                    setInputCorrect('input-sub1');
-                    ganharXP(10);
 
-                    activeLousaState = 2;
-                    setInputActive('input-resto1');
-                    helper.innerText = "Subtraia e abaixe o próximo número!";
-                    instr.innerHTML = "Fizemos 12 - 12 = 0. E agora abaixamos o 3! O resto se torna <strong>03</strong>. Digite 03 ou 3 no campo de resto.";
-                } else {
-                    playSound('fail');
-                    falarComLeoRapido("Multiplicamos o 2 pelo divisor 6. Qual o resultado?");
-                }
+            const d1 = parseInt(d1Str);
+            const d2 = parseInt(d2Str);
+
+            if (isNaN(d1) || isNaN(d2) || d2 === 0) {
+                falarComLeoRapido("Números inválidos ou divisor igual a zero!");
+                return;
             }
-            // ETAPA 2: Resto 03 (Espera: 03 ou 3)
-            else if (activeLousaState === 2) {
-                if (val === "3" || val === "03") {
-                    playSound('success');
-                    setInputCorrect('input-resto1');
-                    ganharXP(10);
 
-                    activeLousaState = 3;
-                    // Reativar temporariamente o quociente para adicionar o zero!
-                    const qInt = document.getElementById('input-q-inteiro');
-                    qInt.classList.remove('input-correct');
-                    qInt.disabled = false;
-                    qInt.maxLength = 2;
-                    qInt.classList.add('input-active');
-                    activeFocusedInputId = 'input-q-inteiro';
+            // Gerar a estrutura de passos para a Lousa
+            dynamicSteps = generateDivisionSteps(d1, d2);
+            activeStepIndex = 0;
 
-                    helper.innerText = "Atenção para a Armadilha do Zero!";
-                    instr.innerHTML = "⚡ <strong>ARMADILHA DO ZERO!</strong> Nós acabamos de abaixar o 3. Você deve dividi-lo agora! Quantas vezes o 6 cabe no 3? Dica: Cabe 0 vezes! Atualize o quociente para <strong>20</strong>!";
-                } else {
-                    playSound('fail');
-                    falarComLeoRapido("Subtraia 12 de 12 (sobra 0) e abaixe o 3 que está no dividendo!");
-                }
+            // Resetar UI da Lousa
+            document.getElementById('col-dividend').innerHTML = `<div class="font-extrabold tracking-widest text-white text-4xl mb-2">${d1}</div>`;
+            document.getElementById('div-divisor').innerText = d2;
+            document.getElementById('div-quociente').innerHTML = "";
+            document.getElementById('master-input').value = "";
+            document.getElementById('master-input').disabled = false;
+            document.getElementById('btn-validar-lousa').innerHTML = `<span>Verificar Meu Passo</span> <i class="fa-solid fa-circle-check"></i>`;
+            document.getElementById('btn-validar-lousa').className = "w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-4 px-6 rounded-2xl shadow-md active:scale-95 transition-all text-lg flex items-center justify-center gap-2";
+
+            renderizarInstrucaoAtual();
+        }
+
+        // Motor Dinâmico de Divisão (Mapeia as ações naturais)
+        function generateDivisionSteps(dividend, divisor) {
+            let steps = [];
+            let divStr = dividend.toString();
+            let currentVal = parseInt(divStr[0]);
+            let idx = 0;
+
+            // Busca o primeiro "pedaço" válido, igual como o aluno faz o 'arquinho'
+            while (currentVal < divisor && idx < divStr.length - 1) {
+                idx++;
+                currentVal = currentVal * 10 + parseInt(divStr[idx]);
             }
-            // ETAPA 3: Colocar o Zero no Quociente (Espera: 20)
-            else if (activeLousaState === 3) {
-                if (val === "20") {
-                    playSound('success');
-                    setInputCorrect('input-q-inteiro');
-                    ganharXP(15); // Recompensa extra por escapar da armadilha!
 
-                    activeLousaState = 4;
-                    document.getElementById('lousa-row-sub2').classList.remove('hidden');
-                    setInputActive('input-sub2');
-                    
-                    helper.innerText = "Subtraia o zero do resto!";
-                    instr.innerHTML = "Excelente! Como o 6 coube 0 vezes no 3, subtraímos 0. Digite <strong>0</strong> embaixo do 3 para continuarmos.";
-                } else {
-                    playSound('fail');
-                    falarComLeoRapido("Não coloque a vírgula antes de dividir o 3! O 6 cabe 0 vezes no 3, então o quociente deve ser 20.");
-                }
-            }
-            // ETAPA 4: Subtração do zero (Espera: 0)
-            else if (activeLousaState === 4) {
-                if (val === "0") {
-                    playSound('success');
-                    setInputCorrect('input-sub2');
-                    ganharXP(10);
+            let isDecimal = false;
+            let precision = 0;
+            const MAX_PRECISION = 4; // Impede dízimas infinitas de quebrarem o jogo
 
-                    activeLousaState = 5;
-                    helper.innerText = "Ative a parte decimal colocando a vírgula!";
-                    instr.innerHTML = "Agora o nosso resto é 3. Queremos continuar dividindo! Para isso, adicione a <strong>vírgula (,)</strong> clicando no botão de vírgula do teclado!";
-                } else {
-                    playSound('fail');
-                    falarComLeoRapido("Digite 0 para subtrair e obter o resto real!");
-                }
-            }
-            // ETAPA 5: Colocar a vírgula (O botão de vírgula ativa este estado)
-            else if (activeLousaState === 5) {
-                // Ativar a vírgula visualmente
-                playSound('success');
-                document.getElementById('lousa-comma').classList.remove('hidden');
-                document.getElementById('input-q-decimal').classList.remove('hidden');
+            while (true) {
+                let qDigit = Math.floor(currentVal / divisor);
+                let sub = qDigit * divisor;
+                let rem = currentVal - sub;
+
+                steps.push({
+                    type: 'q_digit',
+                    val: qDigit.toString(),
+                    msg: `Quantas vezes o ${divisor} cabe no ${currentVal}? (Dica: tabuada do ${divisor})`,
+                    helper: `Digite o quociente para ${currentVal} ÷ ${divisor}`
+                });
                 
-                // Mostrar a linha do resto decimal
-                document.getElementById('lousa-row-resto2').classList.remove('hidden');
+                steps.push({
+                    type: 'sub',
+                    val: sub.toString(),
+                    msg: `Muito bem! ${qDigit} × ${divisor} = ${sub}. Vamos subtrair.`,
+                    helper: `Digite ${sub} para subtrair na lousa.`
+                });
 
-                activeLousaState = 6;
-                setInputActive('input-resto2');
+                if (idx < divStr.length - 1) {
+                    idx++;
+                    let nextDigit = divStr[idx];
+                    let nextVal = rem * 10 + parseInt(nextDigit);
+                    
+                    // Validação aceita o resto normal com o número do lado (ex: 3 ou 03)
+                    steps.push({
+                        type: 'rem',
+                        val: nextVal.toString(),
+                        valAlt: (rem === 0 ? nextDigit : nextVal.toString()), 
+                        msg: `Subtraia ${sub} de ${currentVal} e abaixe o próximo número (${nextDigit}).`,
+                        helper: `Digite o resultado da sobra (abaixando o ${nextDigit}).`
+                    });
+                    currentVal = nextVal;
+                } else {
+                    if (rem === 0) {
+                        steps.push({
+                            type: 'rem_final',
+                            val: "0",
+                            msg: `Chegamos ao fim! Subtraia ${sub} de ${currentVal}.`,
+                            helper: `Digite o resto final.`
+                        });
+                        break;
+                    } else {
+                        if (!isDecimal) {
+                            steps.push({
+                                type: 'rem_pre_comma',
+                                val: rem.toString(),
+                                msg: `Subtraia ${sub} de ${currentVal}. Este é o resto.`,
+                                helper: `Digite o resto.`
+                            });
+                            steps.push({
+                                type: 'comma',
+                                val: ",",
+                                msg: `Sobrou ${rem} e não há mais números para abaixar. Hora da vírgula!`,
+                                helper: `Digite a vírgula ( , ) no teclado virtual!`
+                            });
+                            isDecimal = true;
+                        } else {
+                             steps.push({
+                                type: 'rem_pre_zero',
+                                val: rem.toString(),
+                                msg: `Subtraia ${sub} de ${currentVal}.`,
+                                helper: `Digite o resto decimal.`
+                            });
+                        }
+
+                        if (precision >= MAX_PRECISION) {
+                            steps.push({
+                                type: 'rem_final',
+                                val: rem.toString(),
+                                msg: `Vamos parar por aqui! A conta deu uma dízima ou possui muitas casas.`,
+                                helper: `Apenas valide o resto final e encerramos.`
+                            });
+                            break;
+                        }
+                        precision++;
+                        let nextVal = rem * 10;
+                        steps.push({
+                            type: 'rem_decimal',
+                            val: nextVal.toString(),
+                            msg: `Adicione o zero mágico ao resto para continuarmos dividindo!`,
+                            helper: `Transforme o resto ${rem} em ${nextVal} décimos/centésimos.`
+                        });
+                        currentVal = nextVal;
+                    }
+                }
+            }
+            return steps;
+        }
+
+        function renderizarInstrucaoAtual() {
+            const masterInput = document.getElementById('master-input');
+            const instrucao = document.getElementById('instrucao-lousa');
+            const helper = document.getElementById('lousa-helper');
+
+            if (activeStepIndex >= dynamicSteps.length) {
+                instrucao.innerHTML = "💥 <strong>SENSACIONAL!</strong> Conta finalizada com perfeição!";
+                helper.innerText = "🎉 PARABÉNS! Você dominou o algoritmo!";
+                masterInput.value = "✔️";
+                masterInput.disabled = true;
+                masterInput.classList.remove('input-active', 'border-blue-400', 'text-blue-800');
+                masterInput.classList.add('border-emerald-500', 'text-emerald-600', 'bg-emerald-50');
                 
-                helper.innerText = "Transforme o resto em décimos!";
-                instr.innerHTML = "Perfeito! A vírgula foi inserida. Agora transformamos o resto de 3 unidades para <strong>30 décimos</strong>. Digite 30 no campo verde!";
+                const btn = document.getElementById('btn-validar-lousa');
+                btn.innerHTML = `<span>CONCLUÍDO! (+30 XP)</span>`;
+                btn.className = "w-full bg-slate-400 text-white font-black py-4 px-6 rounded-2xl shadow-md transition-all text-lg flex items-center justify-center cursor-not-allowed";
+                
+                ganharXP(30);
                 triggerConfetti();
+                playSound('success');
+                return;
             }
-            // ETAPA 6: Preencher o resto com 30 (Espera: 30)
-            else if (activeLousaState === 6) {
-                if (val === "30") {
-                    playSound('success');
-                    setInputCorrect('input-resto2');
-                    ganharXP(10);
 
-                    activeLousaState = 7;
-                    setInputActive('input-q-decimal');
-                    
-                    helper.innerText = "Divida os décimos!";
-                    instr.innerHTML = "Muito bem! Agora dividimos 30 décimos por 6. Quantas vezes o 6 cabe no 30? Digite o resultado após a vírgula!";
-                } else {
-                    playSound('fail');
-                    falarComLeoRapido("Com a vírgula, o nosso resto 3 ganha um zero e vira 30 décimos! Digite 30.");
-                }
+            const step = dynamicSteps[activeStepIndex];
+            instrucao.innerHTML = step.msg;
+            helper.innerText = step.helper;
+            masterInput.value = "";
+            
+            // Tratamento visual para o input na vírgula
+            if(step.type === 'comma') {
+                masterInput.classList.remove('text-blue-800');
+                masterInput.classList.add('text-pink-600', 'text-5xl');
+            } else {
+                masterInput.classList.add('text-blue-800');
+                masterInput.classList.remove('text-pink-600', 'text-5xl');
             }
-            // ETAPA 7: Quociente Decimal (Espera: 5)
-            else if (activeLousaState === 7) {
-                if (val === "5") {
-                    playSound('success');
-                    setInputCorrect('input-q-decimal');
-                    ganharXP(10);
+        }
 
-                    activeLousaState = 8;
-                    document.getElementById('lousa-row-sub3').classList.remove('hidden');
-                    setInputActive('input-sub3');
+        function pressVirtualKey(key) {
+            playSound('click');
+            const input = document.getElementById('master-input');
+            if (input.disabled) return;
 
-                    helper.innerText = "Quase lá! Insira a subtração final.";
-                    instr.innerHTML = "Isso aí! 5 × 6 = 30. Digite <strong>30</strong> na linha de subtração final.";
-                } else {
-                    playSound('fail');
-                    falarComLeoRapido("Pense na tabuada do 6: qual número multiplicado por 6 dá 30? (Dica: é 5).");
-                }
-            }
-            // ETAPA 8: Subtração Final (Espera: 30)
-            else if (activeLousaState === 8) {
-                if (val === "30") {
-                    playSound('success');
-                    setInputCorrect('input-sub3');
-                    ganharXP(10);
-
-                    activeLousaState = 9;
-                    document.getElementById('lousa-row-resto3').classList.remove('hidden');
-                    setInputActive('input-resto3');
-
-                    helper.innerText = "Último passo! Digite o resto final.";
-                    instr.innerHTML = "Ótimo! Agora faça a subtração 30 - 30 e digite o resto final para acabar!";
-                } else {
-                    playSound('fail');
-                    falarComLeoRapido("Digite 30 para fazermos a última subtração da conta.");
-                }
-            }
-            // ETAPA 9: Resto Final 0 (Espera: 0)
-            else if (activeLousaState === 9) {
-                if (val === "0") {
-                    playSound('success');
-                    setInputCorrect('input-resto3');
-                    ganharXP(30); // Grande bônus!
-                    triggerConfetti();
-
-                    helper.innerText = "🎉 PARABÉNS! Você dominou a divisão com vírgula!";
-                    instr.innerHTML = "💥 <strong>SENSACIONAL!</strong> Você resolveu a conta inteirinha, escapou da armadilha do zero, adicionou a vírgula decimal e obteve o quociente exato de <strong>20,5</strong>! O Leo ganhou muita experiência!";
-                    
-                    document.getElementById('btn-validar-lousa').innerHTML = "<span>CONCLUÍDO COM SUCESSO! ⭐</span>";
-                    document.getElementById('btn-validar-lousa').className = "w-full bg-emerald-600 text-white font-black py-4 px-6 rounded-2xl shadow-md cursor-default text-lg flex items-center justify-center gap-2";
-                } else {
-                    playSound('fail');
-                    falarComLeoRapido("Quanto sobrou de 30 - 30?");
+            if (key === 'delete') {
+                input.value = input.value.slice(0, -1);
+            } else {
+                // Apenas insere se for número ou vírgula
+                if (input.value.length < 5) {
+                    input.value += key;
                 }
             }
         }
 
+        function validarPassoDinamico() {
+            if (activeStepIndex >= dynamicSteps.length) return;
 
-        // --- LÓGICA: CANHÃO SUMI-VÍRGULA ---
+            const input = document.getElementById('master-input');
+            const val = input.value.trim();
+            const step = dynamicSteps[activeStepIndex];
+
+            if (val === "") {
+                playSound('fail');
+                falarComLeoRapido("Ei! Escreva o valor correto usando o teclado virtual!");
+                return;
+            }
+
+            // Aceita val exato ou valAlt (casos onde 3 e 03 são aceitos visualmente)
+            if (val === step.val || val === step.valAlt) {
+                playSound('success');
+                ganharXP(5);
+                adicionarElementoNaLousa(step, val);
+                
+                activeStepIndex++;
+                renderizarInstrucaoAtual();
+            } else {
+                playSound('fail');
+                
+                // Dica Especial da Armadilha do Zero
+                if (step.type === 'q_digit' && step.val === '0' && val === ',') {
+                    falarComLeoRapido("⚠️ Armadilha do Zero! O número que você abaixou tem que ser dividido antes da vírgula! Ele cabe 0 vezes.");
+                } else {
+                    falarComLeoRapido(`Tente de novo! A resposta esperada era parecida com ${step.val}. Use sua tabuada!`);
+                }
+            }
+        }
+
+        function adicionarElementoNaLousa(step, typedVal) {
+            const colDivd = document.getElementById('col-dividend');
+            const colQuoc = document.getElementById('div-quociente');
+
+            if (step.type === 'q_digit') {
+                colQuoc.innerHTML += `<span>${typedVal}</span>`;
+            } else if (step.type === 'comma') {
+                colQuoc.innerHTML += `<span class="text-pink-500 mx-0.5 animate-bounce">,</span>`;
+            } else if (step.type === 'sub') {
+                colDivd.innerHTML += `<div class="text-red-400 text-xl font-bold tracking-widest mt-1">- ${typedVal}</div>`;
+            } else if (step.type === 'rem' || step.type === 'rem_pre_comma' || step.type === 'rem_pre_zero') {
+                colDivd.innerHTML += `<div class="border-t-2 border-slate-600 text-slate-300 pt-1 text-2xl font-bold tracking-widest">${typedVal}</div>`;
+            } else if (step.type === 'rem_decimal') {
+                colDivd.innerHTML += `<div class="text-emerald-300 text-2xl font-bold tracking-widest mt-1">${typedVal} <span class="text-[10px] font-sans text-emerald-500 uppercase ml-1">décimos</span></div>`;
+            } else if (step.type === 'rem_final') {
+                if (step.val === "0") {
+                    colDivd.innerHTML += `<div class="border-t-2 border-slate-600 text-emerald-400 pt-1 font-black text-3xl tracking-widest mt-1">0</div>`;
+                } else {
+                    colDivd.innerHTML += `<div class="border-t-2 border-slate-600 text-yellow-400 pt-1 font-black text-2xl tracking-widest mt-1">${typedVal}</div>`;
+                }
+            }
+        }
+
+        // Detectar o pressionamento do teclado físico 
+        document.addEventListener('keydown', function(event) {
+            if (currentTab === 'armadilha') {
+                const activeEl = document.activeElement;
+                if (activeEl.id !== 'custom-divd' && activeEl.id !== 'custom-divs') {
+                    const key = event.key;
+                    if (/[0-9,]/.test(key)) {
+                        pressVirtualKey(key);
+                    } else if (key === 'Backspace') {
+                        pressVirtualKey('delete');
+                    } else if (key === 'Enter') {
+                        validarPassoDinamico();
+                    }
+                }
+            }
+        });
+
+
+        // --- LÓGICA DO MÓDULO 2: CANHÃO SUMI-VÍRGULA ---
         let canhaoN1 = 56.4;
         let canhaoN2 = 6;
 
@@ -833,8 +772,8 @@
             document.getElementById('canhao-divd').innerText = n1.toString().replace('.', ',');
             document.getElementById('canhao-divs').innerText = n2.toString().replace('.', ',');
 
-            const dp1 = getDecimalPlaces(n1);
-            const dp2 = getDecimalPlaces(n2);
+            const dp1 = (n1.toString().includes('.')) ? n1.toString().split('.')[1].length : 0;
+            const dp2 = (n2.toString().includes('.')) ? n2.toString().split('.')[1].length : 0;
 
             document.getElementById('canhao-divd-casas').innerText = `${dp1} casa(s) decimal(ais)`;
             document.getElementById('canhao-divs-casas').innerText = `${dp2} casa(s) decimal(ais)`;
@@ -843,17 +782,9 @@
             feed.classList.add('hidden');
         }
 
-        function getDecimalPlaces(num) {
-            const str = num.toString();
-            if (str.indexOf('.') !== -1) {
-                return str.split('.')[1].length;
-            }
-            return 0;
-        }
-
         function dispararCanhao(mult) {
-            const dp1 = getDecimalPlaces(canhaoN1);
-            const dp2 = getDecimalPlaces(canhaoN2);
+            const dp1 = (canhaoN1.toString().includes('.')) ? canhaoN1.toString().split('.')[1].length : 0;
+            const dp2 = (canhaoN2.toString().includes('.')) ? canhaoN2.toString().split('.')[1].length : 0;
             const maxCasas = Math.max(dp1, dp2);
             const multCorreto = Math.pow(10, maxCasas);
 
@@ -870,8 +801,8 @@
 
                 feed.className = "p-4 rounded-2xl text-center font-bold text-base border-2 bg-emerald-100 text-emerald-800 border-emerald-300 block";
                 feed.innerHTML = `🎯 ALVO ACERTADO! Multiplicando por <strong>${mult}</strong>, as vírgulas somem dos dois lados!<br>
-                A conta original se transforma em: <span class="text-xl font-black">${finalN1} ÷ ${finalN2}</span>!<br>
-                Agora você pode dividi-la normalmente sem se preocupar com vírgulas! (+20 XP)`;
+                A conta original se transforma em: <span class="text-2xl font-black block my-2 text-emerald-900">${finalN1} ÷ ${finalN2}</span>
+                Agora você pode jogar essa conta na Lousa Mágica sem problemas! (+20 XP)`;
             } else {
                 playSound('fail');
                 feed.className = "p-4 rounded-2xl text-center font-bold text-base border-2 bg-red-100 text-red-800 border-red-300 block";
@@ -885,7 +816,7 @@
         }
 
 
-        // --- LÓGICA DA ARENA DE DESAFIOS (QUIZ) ---
+        // --- LÓGICA DO MÓDULO 3: ARENA DE TREINO (QUIZ) ---
         let perguntaAtiva = {};
         const bancoPerguntas = [
             { q: "Qual o resultado de 6 ÷ 5 em quociente decimal?", r: "1,2", t: "Divida 6 por 5. Sobra 1 de resto. Adicione a vírgula para transformar o resto em 10 décimos!" },
@@ -893,7 +824,7 @@
             { q: "Dona Joaquina quer dividir 10 chocolates para 8 netos. Quanto ganha cada neto?", r: "1,25", t: "Primeiro distribua 1 inteiro para cada. Os 2 de resto viram 20 décimos!" },
             { q: "Qual o resultado de 123 dividido por 6?", r: "20,5", t: "Lembre-se da lousa! Cuidado com o zero após abaixar o 3!" },
             { q: "Se dividirmos 3 por 20, quanto dá o quociente decimal?", r: "0,15", t: "3 é menor que 20. Comece colocando 0, no quociente para transformar em 30 décimos!" },
-            { q: "Ao dividir 25 por 3, temos uma dízima periódica. Qual número se repete infinitamente?", r: "3", t: "Dica: 8,3333... Colocamos um traço no número do período." }
+            { q: "Ao dividir 25 por 3, temos uma dízima periódica. Qual algarismo se repete infinitamente?", r: "3", t: "Dica: 8,3333... Colocamos um traço no algarismo que é o período." }
         ];
 
         function carregarPerguntaArena() {
@@ -907,7 +838,7 @@
             document.getElementById('arena-tip').innerText = `Dica do Leo: ${perguntaAtiva.t}`;
         }
 
-        function verificarResposta() {
+        function verificarQuiz() {
             const rawAns = document.getElementById('arena-answer').value.trim().replace(/\s/g, '').replace(',', '.');
             const targetAns = perguntaAtiva.r.replace(',', '.');
 
@@ -944,10 +875,15 @@
             carregarPerguntaArena();
         }
 
-        // --- INICIALIZAÇÃO ---
+        // --- INICIALIZAÇÃO AUTOMÁTICA ---
         window.onload = function() {
             atualizarProgressoVisual();
-            reiniciarLousaAtiva();
+            
+            // Preset do caso base ensinado (123 / 6)
+            document.getElementById('custom-divd').value = "123";
+            document.getElementById('custom-divs').value = "6";
+            iniciarContaDinamica();
+            
             carregarCasoCanhao(56.4, 6);
             carregarPerguntaArena();
         };
