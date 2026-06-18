@@ -1,613 +1,292 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leo e o Castelo da Divisão Mágica - Ferramenta Completa</title>
-    <!-- Tailwind CSS para design moderno e responsivo -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts para tipografia infantil e acolhedora -->
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome para ícones fofos -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        body {
-            font-family: 'Fredoka', sans-serif;
-            background-color: #f0fdf4; /* Verde menta pastel super relaxante */
-            background-image: radial-gradient(#bbf7d0 1px, transparent 1px);
-            background-size: 24px 24px;
-        }
-        
-        .bouncy {
-            animation: bounce 2s infinite;
-        }
-        
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
-        }
-
-        .pet-bounce {
-            animation: petBounce 0.8s ease-in-out infinite alternate;
-        }
-
-        @keyframes petBounce {
-            0% { transform: scale(1) rotate(-2deg); }
-            100% { transform: scale(1.1) translateY(-6px) rotate(2deg); }
-        }
-
-        .confetti {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            border-radius: 40%;
-            animation: fall 2s linear forwards;
-        }
-
-        @keyframes fall {
-            to {
-                transform: translateY(200px) rotate(720deg);
-                opacity: 0;
-            }
-        }
-
-        /* Animação do input ativo */
-        .input-active {
-            border-color: #3b82f6 !important;
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
-            animation: pulseBg 1.5s infinite alternate;
-        }
-        @keyframes pulseBg {
-            0% { background-color: #ffffff; }
-            100% { background-color: #eff6ff; }
-        }
-    </style>
-</head>
-<body class="min-h-screen flex flex-col justify-between text-slate-700">
-
-    <!-- TOPO DO CASTELO -->
-    <header class="bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-white py-6 px-4 rounded-b-[2.5rem] shadow-2xl text-center relative">
-        <div class="absolute top-4 left-4 text-4xl animate-pulse">👑</div>
-        <div class="absolute top-4 right-4 text-4xl animate-pulse" style="animation-delay: 0.4s">🏰</div>
-        <h1 class="text-3xl md:text-5xl font-black tracking-wider text-yellow-300 drop-shadow-[0_4px_6px_rgba(0,0,0,0.3)]">
-            CASTELO DA DIVISÃO MÁGICA
-        </h1>
-        <p class="text-xs md:text-base mt-2 font-medium text-emerald-50">
-            A ferramenta completa para dividir qualquer número passo a passo! 🐉✨
-        </p>
-    </header>
-
-    <!-- PET DRAGÃO LEO & PROGRESSO -->
-    <div class="max-w-4xl w-full mx-auto px-4 mt-6">
-        <div class="bg-white rounded-3xl p-5 border-4 border-emerald-300 shadow-xl flex flex-col md:flex-row items-center gap-6 relative">
-            <div class="flex flex-col items-center shrink-0 relative">
-                <div id="pet-avatar" class="text-7xl md:text-8xl pet-bounce select-none cursor-pointer" onclick="falarComLeo()">🥚</div>
-                <div id="pet-bubble" class="absolute -top-14 left-1/2 transform -translate-x-1/2 bg-yellow-100 border-2 border-yellow-300 px-4 py-2 rounded-2xl text-xs font-bold text-yellow-800 shadow-lg hidden w-48 text-center z-10 animate-bounce">
-                    Clique em mim!
-                </div>
-            </div>
+<script>
+    // --- SINTETIZADOR DE SONS (Web Audio API) ---
+    function playSound(type) {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
             
-            <div class="flex-grow w-full text-center md:text-left">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-xl font-extrabold text-emerald-700 flex items-center gap-2">
-                        <span id="pet-name">Ovo do Leo</span> 
-                        <span class="text-xs bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-bold" id="pet-level">Fase: Ovo</span>
-                    </span>
-                    <span class="text-sm font-bold text-slate-400"><span id="xp-val">0</span> / 100 XP</span>
-                </div>
-                <div class="w-full bg-slate-100 rounded-full h-6 p-1 border-2 border-slate-200 shadow-inner">
-                    <div id="xp-bar" class="bg-gradient-to-r from-yellow-400 to-amber-500 h-full rounded-full transition-all duration-500" style="width: 5%"></div>
-                </div>
-                <p class="text-xs text-slate-400 mt-2 font-medium">Resolva as contas na lousa inteligente ou brinque com o canhão para evoluir! 🚀</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- SELETOR DE ATIVIDADES -->
-    <nav class="max-w-4xl w-full mx-auto px-4 mt-6 grid grid-cols-3 gap-2 md:gap-4">
-        <button onclick="irParaAba('armadilha')" id="tab-btn-armadilha" class="py-3 px-1 md:px-4 rounded-2xl font-black text-xs md:text-base flex flex-col md:flex-row items-center justify-center gap-2 transition-all shadow-md bg-emerald-500 text-white transform -translate-y-1">
-            <span class="text-xl">✍️</span>
-            <span>Lousa Mágica</span>
-        </button>
-        <button onclick="irParaAba('canhao')" id="tab-btn-canhao" class="py-3 px-1 md:px-4 rounded-2xl font-black text-xs md:text-base flex flex-col md:flex-row items-center justify-center gap-2 transition-all shadow-md bg-white text-slate-500 hover:bg-emerald-50">
-            <span class="text-xl">🔫</span>
-            <span>Canhão Sumi-Vírgula</span>
-        </button>
-        <button onclick="irParaAba('arena')" id="tab-btn-arena" class="py-3 px-1 md:px-4 rounded-2xl font-black text-xs md:text-base flex flex-col md:flex-row items-center justify-center gap-2 transition-all shadow-md bg-white text-slate-500 hover:bg-emerald-50">
-            <span class="text-xl">⚔️</span>
-            <span>Arena de Treino</span>
-        </button>
-    </nav>
-
-    <!-- PAINEL PRINCIPAL -->
-    <main class="max-w-4xl w-full mx-auto px-4 flex-grow my-6">
-
-        <!-- ================= MÓDULO 1: LOUSA DINÂMICA COMPLETA ================= -->
-        <section id="tab-armadilha" class="space-y-6 block">
-            <div class="bg-white rounded-3xl p-6 border-4 border-emerald-300 shadow-xl">
-                
-                <!-- Criador de Conta Dinâmica -->
-                <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-4 mb-6">
-                    <h3 class="text-lg font-black text-emerald-800 mb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-calculator"></i> Crie sua própria conta de divisão!
-                    </h3>
-                    <div class="flex flex-col md:flex-row items-center gap-4">
-                        <input type="text" id="custom-divd" placeholder="Dividendo (ex: 123)" class="w-full md:w-1/3 text-center font-bold p-3 rounded-xl border-2 border-emerald-300 focus:outline-none focus:border-emerald-600">
-                        <span class="text-3xl font-black text-slate-400">÷</span>
-                        <input type="text" id="custom-divs" placeholder="Divisor (ex: 6)" class="w-full md:w-1/3 text-center font-bold p-3 rounded-xl border-2 border-emerald-300 focus:outline-none focus:border-emerald-600">
-                        <button onclick="iniciarContaDinamica()" class="w-full md:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all flex-grow">
-                            Montar Lousa 🚀
-                        </button>
-                    </div>
-                    <p class="text-xs text-emerald-600 mt-2 font-medium">A Lousa aceita números inteiros. Se precisar dividir com decimais, use o Canhão Sumi-Vírgula primeiro!</p>
-                </div>
-
-                <!-- Painel Principal de Preenchimento -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-4 md:p-6 rounded-3xl border-2 border-slate-100">
-                    
-                    <!-- LADO ESQUERDO: A LOUSA NEGRA DINÂMICA -->
-                    <div class="bg-slate-900 text-white p-6 rounded-2xl font-mono shadow-2xl relative flex flex-col justify-start min-h-[400px]">
-                        <span class="absolute top-2 left-4 text-[10px] text-slate-500 uppercase tracking-widest font-sans">Caderno Passo a Passo</span>
-                        
-                        <div class="flex justify-center items-start gap-6 mt-8">
-                            
-                            <!-- DIVIDENDO E COLUNA DINÂMICA DE SUBTRAÇÕES/RESTOS -->
-                            <div class="text-right text-2xl font-bold space-y-1 flex flex-col items-end w-1/2 pr-2" id="col-dividend">
-                                <!-- Preenchido dinamicamente via JS -->
-                            </div>
-                            
-                            <!-- CHAVE DA DIVISÃO -->
-                            <div class="border-l-4 border-t-4 border-emerald-400 pl-4 pt-2 text-left w-1/2">
-                                <div class="text-slate-500 text-[10px] font-sans uppercase">Divisor</div>
-                                <div id="div-divisor" class="text-white text-3xl font-black mb-6 tracking-widest">6</div>
-                                
-                                <div class="text-slate-500 text-[10px] font-sans uppercase">Quociente</div>
-                                <div id="div-quociente" class="text-yellow-300 text-3xl font-extrabold tracking-widest flex items-end min-h-[2rem]">
-                                    <!-- Preenchido dinamicamente via JS -->
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <!-- LADO DIREITO: INSTRUÇÕES E TECLADO -->
-                    <div class="flex flex-col justify-between space-y-4">
-                        <div class="bg-emerald-50 border-2 border-emerald-200 p-5 rounded-3xl relative shadow-inner">
-                            <div class="absolute -top-4 -left-4 text-3xl">🐉</div>
-                            <h4 class="font-extrabold text-emerald-800 mb-2">Leo está te guiando:</h4>
-                            <p class="text-sm text-slate-700 leading-relaxed font-medium" id="instrucao-lousa">
-                                Insira os valores para começarmos a calcular juntos!
-                            </p>
-                            <p class="text-xs font-bold text-emerald-600 mt-3 bg-emerald-100 p-2 rounded-lg" id="lousa-helper">
-                                Dica mágica vai aparecer aqui!
-                            </p>
-                        </div>
-
-                        <!-- O Único Input Master para Digitação Segura -->
-                        <div>
-                            <input type="text" id="master-input" class="w-full text-center text-3xl font-black p-4 rounded-2xl border-4 border-blue-400 focus:outline-none input-active text-blue-800 bg-white" placeholder="?" readonly>
-                        </div>
-
-                        <!-- Teclado Numérico Virtual (Perfeito com a vírgula) -->
-                        <div class="bg-white p-3 rounded-2xl border border-slate-200 grid grid-cols-3 gap-2">
-                            <button onclick="pressVirtualKey('1')" class="bg-slate-100 hover:bg-slate-200 py-3 rounded-xl font-bold active:scale-95 text-lg">1</button>
-                            <button onclick="pressVirtualKey('2')" class="bg-slate-100 hover:bg-slate-200 py-3 rounded-xl font-bold active:scale-95 text-lg">2</button>
-                            <button onclick="pressVirtualKey('3')" class="bg-slate-100 hover:bg-slate-200 py-3 rounded-xl font-bold active:scale-95 text-lg">3</button>
-                            <button onclick="pressVirtualKey('4')" class="bg-slate-100 hover:bg-slate-200 py-3 rounded-xl font-bold active:scale-95 text-lg">4</button>
-                            <button onclick="pressVirtualKey('5')" class="bg-slate-100 hover:bg-slate-200 py-3 rounded-xl font-bold active:scale-95 text-lg">5</button>
-                            <button onclick="pressVirtualKey('6')" class="bg-slate-100 hover:bg-slate-200 py-3 rounded-xl font-bold active:scale-95 text-lg">6</button>
-                            <button onclick="pressVirtualKey('7')" class="bg-slate-100 hover:bg-slate-200 py-3 rounded-xl font-bold active:scale-95 text-lg">7</button>
-                            <button onclick="pressVirtualKey('8')" class="bg-slate-100 hover:bg-slate-200 py-3 rounded-xl font-bold active:scale-95 text-lg">8</button>
-                            <button onclick="pressVirtualKey('9')" class="bg-slate-100 hover:bg-slate-200 py-3 rounded-xl font-bold active:scale-95 text-lg">9</button>
-                            <button onclick="pressVirtualKey(',')" class="bg-pink-100 hover:bg-pink-200 text-pink-700 py-3 rounded-xl font-black active:scale-95 text-2xl shadow-sm">,</button>
-                            <button onclick="pressVirtualKey('0')" class="bg-slate-100 hover:bg-slate-200 py-3 rounded-xl font-bold active:scale-95 text-lg">0</button>
-                            <button onclick="pressVirtualKey('delete')" class="bg-red-100 hover:bg-red-200 text-red-700 py-3 rounded-xl font-bold active:scale-95 text-sm"><i class="fa-solid fa-backspace"></i></button>
-                        </div>
-
-                        <!-- Botão de Confirmação -->
-                        <div>
-                            <button id="btn-validar-lousa" onclick="validarPassoDinamico()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-4 px-6 rounded-2xl shadow-md active:scale-95 transition-all text-lg flex items-center justify-center gap-2">
-                                <span>Verificar Meu Passo</span> <i class="fa-solid fa-circle-check"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <!-- ================= MÓDULO 2: CANHÃO SUMI-VÍRGULA ================= -->
-        <section id="tab-canhao" class="hidden space-y-6">
-            <div class="bg-white rounded-3xl p-6 border-4 border-emerald-300 shadow-xl">
-                <h3 class="text-2xl font-black text-emerald-700 flex items-center gap-2 mb-2">
-                    🔫 O Canhão "Sumi-Vírgula"
-                </h3>
-                <p class="text-slate-500 text-sm mb-6">
-                    A regra oficial para dividir números com vírgula é: <strong>multiplicar os dois termos por 10, 100 ou 1000</strong> até que todos os números fiquem inteiros e sem nenhuma vírgula!
-                </p>
-
-                <!-- Seletores Interativos de Casos da Gis -->
-                <div class="bg-emerald-50/50 p-5 rounded-3xl border-2 border-emerald-100 space-y-4 mb-6">
-                    <span class="text-xs font-black text-emerald-800 uppercase tracking-wider block">Escolha uma conta de exemplo da Profª Gis:</span>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
-                        <button onclick="carregarCasoCanhao(56.4, 6)" class="bg-white hover:bg-emerald-100 p-3 rounded-xl border-2 border-emerald-200 text-sm font-bold transition-all">
-                            Caso 1: $56,4 \div 6$
-                        </button>
-                        <button onclick="carregarCasoCanhao(22.22, 2.2)" class="bg-white hover:bg-emerald-100 p-3 rounded-xl border-2 border-emerald-200 text-sm font-bold transition-all">
-                            Caso 2: $22,22 \div 2,2$
-                        </button>
-                        <button onclick="carregarCasoCanhao(1.25, 0.5)" class="bg-white hover:bg-emerald-100 p-3 rounded-xl border-2 border-emerald-200 text-sm font-bold transition-all">
-                            Caso 3: $1,25 \div 0,5$
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Painel do Canhão -->
-                <div class="bg-slate-50 p-6 rounded-3xl border-2 border-slate-100 space-y-6 text-center">
-                    <!-- Representação Visual dos Números com Escudo de Vírgula -->
-                    <div class="flex flex-col md:flex-row justify-center items-center gap-6">
-                        
-                        <div class="bg-white p-4 rounded-2xl border-2 border-slate-200 shadow-sm w-full max-w-[240px]">
-                            <span class="text-[10px] font-bold text-slate-400 block uppercase mb-1">Dividendo</span>
-                            <div class="text-3xl font-black text-slate-800" id="canhao-divd">56,4</div>
-                            <span class="text-xs text-emerald-600 font-bold" id="canhao-divd-casas">1 casa decimal</span>
-                        </div>
-
-                        <div class="text-3xl font-black text-slate-300">÷</div>
-
-                        <div class="bg-white p-4 rounded-2xl border-2 border-slate-200 shadow-sm w-full max-w-[240px]">
-                            <span class="text-[10px] font-bold text-slate-400 block uppercase mb-1">Divisor</span>
-                            <div class="text-3xl font-black text-slate-800" id="canhao-divs">6</div>
-                            <span class="text-xs text-emerald-600 font-bold" id="canhao-divs-casas">0 casas decimais</span>
-                        </div>
-
-                    </div>
-
-                    <!-- Botões de Multiplicador Mágico -->
-                    <div class="space-y-3 max-w-md mx-auto pt-4">
-                        <span class="text-xs font-black text-slate-400 uppercase tracking-widest block">Selecione o Multiplicador Ideal:</span>
-                        <div class="grid grid-cols-3 gap-2">
-                            <button onclick="dispararCanhao(10)" class="bg-amber-400 hover:bg-amber-500 text-white font-black py-3 rounded-xl shadow transition-all">× 10</button>
-                            <button onclick="dispararCanhao(100)" class="bg-amber-500 hover:bg-amber-600 text-white font-black py-3 rounded-xl shadow transition-all">× 100</button>
-                            <button onclick="dispararCanhao(1000)" class="bg-amber-600 hover:bg-amber-700 text-white font-black py-3 rounded-xl shadow transition-all">× 1000</button>
-                        </div>
-                    </div>
-
-                    <!-- Alerta / Resultado do Canhão -->
-                    <div id="canhao-feedback" class="hidden p-4 rounded-2xl text-center font-bold text-sm md:text-base border-2">
-                        Feedback de ação
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ================= MÓDULO 3: ARENA DE DESAFIOS (QUIZ) ================= -->
-        <section id="tab-arena" class="hidden space-y-6">
-            <div class="bg-white rounded-3xl p-6 border-4 border-emerald-300 shadow-xl relative overflow-hidden">
-                <div class="absolute -top-10 -left-10 w-32 h-32 bg-emerald-100 rounded-full blur-2xl"></div>
-
-                <div class="text-center max-w-md mx-auto space-y-3">
-                    <span class="text-4xl animate-bounce inline-block">⚔️</span>
-                    <h3 class="text-3xl font-black text-emerald-700">Arena da Divisão do Leo</h3>
-                    <p class="text-slate-500 text-sm">
-                        Resolva corretamente os desafios para conseguir <strong>+25 XP</strong> e ajudar o Leo a evoluir!
-                    </p>
-                </div>
-
-                <!-- Pergunta em Destaque -->
-                <div class="bg-emerald-50 p-6 rounded-3xl border-2 border-emerald-100 text-center my-6 relative shadow-inner">
-                    <span class="absolute top-2 left-4 text-[10px] font-black text-emerald-400 uppercase tracking-widest">Desafio</span>
-                    <h4 class="text-xl md:text-2xl font-black text-emerald-950 mt-2" id="arena-question">
-                        Carregando pergunta mágica...
-                    </h4>
-                    <p class="text-xs text-emerald-600 font-bold mt-2" id="arena-tip">Dica do dragãozinho Leo</p>
-                </div>
-
-                <!-- Resposta e Botões de Ação -->
-                <div class="max-w-md mx-auto space-y-4">
-                    <div>
-                        <input type="text" id="arena-answer" placeholder="Escreva o número (ex: 1,2 ou 20,5)" class="w-full text-center text-2xl font-bold p-4 rounded-2xl border-4 border-emerald-200 focus:border-emerald-500 focus:outline-none transition-colors">
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-3">
-                        <button onclick="verificarQuiz()" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-black py-4 rounded-2xl shadow-md transition-all text-sm md:text-base">
-                            Enviar Resposta! 🎯
-                        </button>
-                        <button onclick="pularPergunta()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-500 font-bold py-4 rounded-2xl transition-all text-xs md:text-sm">
-                            Mudar Pergunta 🎲
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Feedback Visual -->
-                <div id="arena-feedback" class="hidden mt-6 p-4 rounded-2xl text-center font-bold text-sm md:text-base border-2">
-                    Feedback dinâmico
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- CONFETE DIV -->
-    <div id="confetti-container" class="fixed inset-0 pointer-events-none z-50 overflow-hidden"></div>
-
-    <!-- RODAPÉ -->
-    <footer class="bg-slate-800 text-slate-400 py-6 text-center text-xs rounded-t-[2.5rem] border-t border-slate-700 mt-6">
-        <p class="font-black text-emerald-400 mb-1">Mestre da Divisão Decimais © 2026</p>
-        <p>Projetado com base nas aulas de divisão com quociente decimal e números decimais da Profª Gis.</p>
-    </footer>
-
-    <!-- JAVASCRIPT DE INTEGRAÇÃO LÚDICA -->
-    <script>
-        // --- SINTETIZADOR DE SONS (Web Audio API) ---
-        function playSound(type) {
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                
-                if (type === 'click') {
-                    osc.frequency.setValueAtTime(450, ctx.currentTime);
-                    osc.frequency.exponentialRampToValueAtTime(900, ctx.currentTime + 0.08);
-                    gain.gain.setValueAtTime(0.04, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.08);
-                } else if (type === 'success') {
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
-                    osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1); // E5
-                    osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2); // G5
-                    osc.frequency.setValueAtTime(1046.50, ctx.currentTime + 0.3); // C6
-                    gain.gain.setValueAtTime(0.08, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.4);
-                } else if (type === 'fail') {
-                    osc.frequency.setValueAtTime(160, ctx.currentTime);
-                    osc.frequency.linearRampToValueAtTime(60, ctx.currentTime + 0.25);
-                    gain.gain.setValueAtTime(0.12, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.25);
-                } else if (type === 'evolve') {
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(180, ctx.currentTime);
-                    osc.frequency.exponentialRampToValueAtTime(1500, ctx.currentTime + 0.6);
-                    gain.gain.setValueAtTime(0.08, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.6);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.6);
-                }
-            } catch (e) {
-                console.log("Sons não suportados.");
+            if (type === 'click') {
+                osc.frequency.setValueAtTime(450, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(900, ctx.currentTime + 0.08);
+                gain.gain.setValueAtTime(0.04, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.08);
+            } else if (type === 'success') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+                osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1);
+                osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2);
+                osc.frequency.setValueAtTime(1046.50, ctx.currentTime + 0.3);
+                gain.gain.setValueAtTime(0.08, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.4);
+            } else if (type === 'fail') {
+                osc.frequency.setValueAtTime(160, ctx.currentTime);
+                osc.frequency.linearRampToValueAtTime(60, ctx.currentTime + 0.25);
+                gain.gain.setValueAtTime(0.12, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.25);
+            } else if (type === 'evolve') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(180, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1500, ctx.currentTime + 0.6);
+                gain.gain.setValueAtTime(0.08, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.6);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.6);
             }
+        } catch (e) {
+            console.log("Sons não suportados.");
         }
+    }
 
-        // --- CONFETES ---
-        function triggerConfetti() {
-            const container = document.getElementById('confetti-container');
-            const colors = ['#34d399', '#6ee7b7', '#a7f3d0', '#60a5fa', '#3b82f6', '#fbbf24'];
+    // --- CONFETES ---
+    function triggerConfetti() {
+        const container = document.getElementById('confetti-container');
+        const colors = ['#34d399', '#6ee7b7', '#a7f3d0', '#60a5fa', '#3b82f6', '#fbbf24'];
+        
+        for (let i = 0; i < 40; i++) {
+            const conf = document.createElement('div');
+            conf.className = 'confetti';
+            conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            conf.style.left = Math.random() * 100 + 'vw';
+            conf.style.top = Math.random() * -10 + 'px';
+            conf.style.animationDelay = Math.random() * 0.4 + 's';
+            conf.style.transform = `scale(${Math.random() * 1.1 + 0.5})`;
+            container.appendChild(conf);
             
-            for (let i = 0; i < 40; i++) {
-                const conf = document.createElement('div');
-                conf.className = 'confetti';
-                conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                conf.style.left = Math.random() * 100 + 'vw';
-                conf.style.top = Math.random() * -10 + 'px';
-                conf.style.animationDelay = Math.random() * 0.4 + 's';
-                conf.style.transform = `scale(${Math.random() * 1.1 + 0.5})`;
-                container.appendChild(conf);
-                
-                setTimeout(() => conf.remove(), 2000);
-            }
+            setTimeout(() => conf.remove(), 2000);
+        }
+    }
+
+    // --- SISTEMA GLOBAL DE XP E EVOLUÇÃO ---
+    let xp = 0;
+    let petState = 0;
+
+    function ganharXP(val) {
+        xp += val;
+        if (xp >= 100) {
+            xp = 0;
+            petState++;
+            if (petState > 3) petState = 3;
+            playSound('evolve');
+            triggerConfetti();
+            falarComLeoRapido("UAU! ESTOU EVOLUINDO!");
+        }
+        atualizarProgressoVisual();
+    }
+
+    function atualizarProgressoVisual() {
+        const bar = document.getElementById('xp-bar');
+        const xpVal = document.getElementById('xp-val');
+        const level = document.getElementById('pet-level');
+        const name = document.getElementById('pet-name');
+        const avatar = document.getElementById('pet-avatar');
+
+        xpVal.innerText = xp;
+        bar.style.width = Math.max(5, xp) + '%';
+
+        if (petState === 0) {
+            avatar.innerText = "🥚"; name.innerText = "Ovo do Leo"; level.innerText = "Fase: Ovo";
+        } else if (petState === 1) {
+            avatar.innerText = "🦖"; name.innerText = "Leo Bebê"; level.innerText = "Fase: Bebê";
+        } else if (petState === 2) {
+            avatar.innerText = "🦎"; name.innerText = "Leo Jovem"; level.innerText = "Fase: Aprendiz";
+        } else {
+            avatar.innerText = "🐉"; name.innerText = "Mestre Leo"; level.innerText = "Fase: Mestre";
+        }
+    }
+
+    function falarComLeo() {
+        playSound('click');
+        const falas = [
+            "A vírgula serve para separar os décimos! 🎯",
+            "Estou ansioso para dividir com você! ⚠️",
+            "Divisão com vírgula é fácil quando igualamos as casas!",
+            "Não esqueça de subtrair o zero quando o número não couber!"
+        ];
+        falarComLeoRapido(falas[Math.floor(Math.random() * falas.length)]);
+    }
+
+    function falarComLeoRapido(txt) {
+        const bubble = document.getElementById('pet-bubble');
+        bubble.innerText = txt;
+        bubble.classList.remove('hidden');
+        // Aumenta o tempo de exibição para 5s e impede sobreposição
+        clearTimeout(bubble._timeout);
+        bubble._timeout = setTimeout(() => bubble.classList.add('hidden'), 5000);
+    }
+
+    // --- SISTEMA DE SELEÇÃO DE ABAS ---
+    let currentTab = 'armadilha';
+    function irParaAba(abaId) {
+        playSound('click');
+        currentTab = abaId;
+        document.querySelectorAll('section').forEach(sec => {
+            sec.classList.remove('block');
+            sec.classList.add('hidden');
+        });
+        document.getElementById(`tab-${abaId}`).classList.remove('hidden');
+        document.getElementById(`tab-${abaId}`).classList.add('block');
+        
+        document.querySelectorAll('nav button').forEach(btn => {
+            btn.className = "py-3 px-1 md:px-4 rounded-2xl font-black text-xs md:text-base flex flex-col md:flex-row items-center justify-center gap-2 transition-all shadow-md bg-white text-slate-500 hover:bg-emerald-50";
+        });
+
+        const activeBtn = document.getElementById(`tab-btn-${abaId}`);
+        activeBtn.className = "py-3 px-1 md:px-4 rounded-2xl font-black text-xs md:text-base flex flex-col md:flex-row items-center justify-center gap-2 transition-all shadow-md bg-emerald-500 text-white transform -translate-y-1";
+    }
+
+
+    // --- LÓGICA DO MÓDULO 1: LOUSA DINÂMICA COMPLETA ---
+    let dynamicSteps = [];
+    let activeStepIndex = 0;
+
+    function iniciarContaDinamica() {
+        playSound('click');
+        const d1Str = document.getElementById('custom-divd').value.trim();
+        const d2Str = document.getElementById('custom-divs').value.trim();
+
+        if (d1Str === "" || d2Str === "") {
+            falarComLeoRapido("Preencha o dividendo e o divisor primeiro!");
+            return;
         }
 
-        // --- SISTEMA GLOBAL DE XP E EVOLUÇÃO ---
-        let xp = 0;
-        let petState = 0;
-
-        function ganharXP(val) {
-            xp += val;
-            if (xp >= 100) {
-                xp = 0;
-                petState++;
-                if (petState > 3) petState = 3;
-                playSound('evolve');
-                triggerConfetti();
-                falarComLeoRapido("UAU! ESTOU EVOLUINDO!");
-            }
-            atualizarProgressoVisual();
+        if (d1Str.includes(',') || d1Str.includes('.') || d2Str.includes(',') || d2Str.includes('.')) {
+            falarComLeoRapido("A Lousa é para números inteiros! Se tiver vírgula, use o Canhão Sumi-Vírgula!");
+            return;
         }
 
-        function atualizarProgressoVisual() {
-            const bar = document.getElementById('xp-bar');
-            const xpVal = document.getElementById('xp-val');
-            const level = document.getElementById('pet-level');
-            const name = document.getElementById('pet-name');
-            const avatar = document.getElementById('pet-avatar');
+        const d1 = parseInt(d1Str);
+        const d2 = parseInt(d2Str);
 
-            xpVal.innerText = xp;
-            bar.style.width = Math.max(5, xp) + '%';
-
-            if (petState === 0) {
-                avatar.innerText = "🥚"; name.innerText = "Ovo do Leo"; level.innerText = "Fase: Ovo";
-            } else if (petState === 1) {
-                avatar.innerText = "🦖"; name.innerText = "Leo Bebê"; level.innerText = "Fase: Bebê";
-            } else if (petState === 2) {
-                avatar.innerText = "🦎"; name.innerText = "Leo Jovem"; level.innerText = "Fase: Aprendiz";
-            } else {
-                avatar.innerText = "🐉"; name.innerText = "Mestre Leo"; level.innerText = "Fase: Mestre";
-            }
+        if (isNaN(d1) || isNaN(d2) || d2 === 0) {
+            falarComLeoRapido("Números inválidos ou divisor igual a zero!");
+            return;
         }
 
-        function falarComLeo() {
-            playSound('click');
-            const falas = [
-                "A vírgula serve para separar os décimos! 🎯",
-                "Estou ansioso para dividir com você! ⚠️",
-                "Divisão com vírgula é fácil quando igualamos as casas!",
-                "Não esqueça de subtrair o zero quando o número não couber!"
-            ];
-            falarComLeoRapido(falas[Math.floor(Math.random() * falas.length)]);
+        dynamicSteps = generateDivisionSteps(d1, d2);
+        console.log("Passos gerados:", dynamicSteps); // Log para depuração
+        
+        if (dynamicSteps.length === 0) {
+            falarComLeoRapido("Erro ao gerar os passos. Tente outros números.");
+            return;
         }
 
-        function falarComLeoRapido(txt) {
-            const bubble = document.getElementById('pet-bubble');
-            bubble.innerText = txt;
-            bubble.classList.remove('hidden');
-            setTimeout(() => bubble.classList.add('hidden'), 3500);
+        activeStepIndex = 0;
+
+        document.getElementById('col-dividend').innerHTML = `<div class="font-extrabold tracking-widest text-white text-4xl mb-2">${d1}</div>`;
+        document.getElementById('div-divisor').innerText = d2;
+        document.getElementById('div-quociente').innerHTML = "";
+        const master = document.getElementById('master-input');
+        master.value = "";
+        master.disabled = false;
+        master.readOnly = false;  // Removido readonly para permitir digitação
+        master.className = "w-full text-center text-3xl font-black p-4 rounded-2xl border-4 border-blue-400 focus:outline-none input-active text-blue-800 bg-white";
+        document.getElementById('btn-validar-lousa').innerHTML = `<span>Verificar Meu Passo</span> <i class="fa-solid fa-circle-check"></i>`;
+        document.getElementById('btn-validar-lousa').className = "w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-4 px-6 rounded-2xl shadow-md active:scale-95 transition-all text-lg flex items-center justify-center gap-2";
+
+        renderizarInstrucaoAtual();
+    }
+
+    function generateDivisionSteps(dividend, divisor) {
+        let steps = [];
+        let divStr = dividend.toString();
+        let currentVal = parseInt(divStr[0]);
+        let idx = 0;
+
+        while (currentVal < divisor && idx < divStr.length - 1) {
+            idx++;
+            currentVal = currentVal * 10 + parseInt(divStr[idx]);
         }
 
-        // --- SISTEMA DE SELEÇÃO DE ABAS ---
-        let currentTab = 'armadilha';
-        function irParaAba(abaId) {
-            playSound('click');
-            currentTab = abaId;
-            document.querySelectorAll('section').forEach(sec => {
-                sec.classList.remove('block');
-                sec.classList.add('hidden');
+        let isDecimal = false;
+        let precision = 0;
+        const MAX_PRECISION = 4;
+
+        while (true) {
+            let qDigit = Math.floor(currentVal / divisor);
+            let sub = qDigit * divisor;
+            let rem = currentVal - sub;
+
+            steps.push({
+                type: 'q_digit',
+                val: qDigit.toString(),
+                msg: `Quantas vezes o ${divisor} cabe no ${currentVal}? (Dica: tabuada do ${divisor})`,
+                helper: `Digite o quociente para ${currentVal} ÷ ${divisor}`
             });
-            document.getElementById(`tab-${abaId}`).classList.remove('hidden');
-            document.getElementById(`tab-${abaId}`).classList.add('block');
             
-            document.querySelectorAll('nav button').forEach(btn => {
-                btn.className = "py-3 px-1 md:px-4 rounded-2xl font-black text-xs md:text-base flex flex-col md:flex-row items-center justify-center gap-2 transition-all shadow-md bg-white text-slate-500 hover:bg-emerald-50";
+            steps.push({
+                type: 'sub',
+                val: sub.toString(),
+                msg: `Muito bem! ${qDigit} × ${divisor} = ${sub}. Vamos subtrair.`,
+                helper: `Digite ${sub} para subtrair na lousa.`
             });
 
-            const activeBtn = document.getElementById(`tab-btn-${abaId}`);
-            activeBtn.className = "py-3 px-1 md:px-4 rounded-2xl font-black text-xs md:text-base flex flex-col md:flex-row items-center justify-center gap-2 transition-all shadow-md bg-emerald-500 text-white transform -translate-y-1";
-        }
-
-
-        // --- LÓGICA DO MÓDULO 1: LOUSA DINÂMICA COMPLETA ---
-        let dynamicSteps = [];
-        let activeStepIndex = 0;
-
-        function iniciarContaDinamica() {
-            playSound('click');
-            const d1Str = document.getElementById('custom-divd').value.trim();
-            const d2Str = document.getElementById('custom-divs').value.trim();
-
-            if (d1Str === "" || d2Str === "") {
-                falarComLeoRapido("Preencha o dividendo e o divisor primeiro!");
-                return;
-            }
-
-            if (d1Str.includes(',') || d1Str.includes('.') || d2Str.includes(',') || d2Str.includes('.')) {
-                falarComLeoRapido("A Lousa é para números inteiros! Se tiver vírgula, use o Canhão Sumi-Vírgula!");
-                return;
-            }
-
-            const d1 = parseInt(d1Str);
-            const d2 = parseInt(d2Str);
-
-            if (isNaN(d1) || isNaN(d2) || d2 === 0) {
-                falarComLeoRapido("Números inválidos ou divisor igual a zero!");
-                return;
-            }
-
-            // Gerar a estrutura de passos para a Lousa
-            dynamicSteps = generateDivisionSteps(d1, d2);
-            activeStepIndex = 0;
-
-            // Resetar UI da Lousa
-            document.getElementById('col-dividend').innerHTML = `<div class="font-extrabold tracking-widest text-white text-4xl mb-2">${d1}</div>`;
-            document.getElementById('div-divisor').innerText = d2;
-            document.getElementById('div-quociente').innerHTML = "";
-            document.getElementById('master-input').value = "";
-            document.getElementById('master-input').disabled = false;
-            document.getElementById('btn-validar-lousa').innerHTML = `<span>Verificar Meu Passo</span> <i class="fa-solid fa-circle-check"></i>`;
-            document.getElementById('btn-validar-lousa').className = "w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-4 px-6 rounded-2xl shadow-md active:scale-95 transition-all text-lg flex items-center justify-center gap-2";
-
-            renderizarInstrucaoAtual();
-        }
-
-        // Motor Dinâmico de Divisão (Mapeia as ações naturais)
-        function generateDivisionSteps(dividend, divisor) {
-            let steps = [];
-            let divStr = dividend.toString();
-            let currentVal = parseInt(divStr[0]);
-            let idx = 0;
-
-            // Busca o primeiro "pedaço" válido, igual como o aluno faz o 'arquinho'
-            while (currentVal < divisor && idx < divStr.length - 1) {
+            if (idx < divStr.length - 1) {
                 idx++;
-                currentVal = currentVal * 10 + parseInt(divStr[idx]);
-            }
-
-            let isDecimal = false;
-            let precision = 0;
-            const MAX_PRECISION = 4; // Impede dízimas infinitas de quebrarem o jogo
-
-            while (true) {
-                let qDigit = Math.floor(currentVal / divisor);
-                let sub = qDigit * divisor;
-                let rem = currentVal - sub;
-
+                let nextDigit = divStr[idx];
+                let nextVal = rem * 10 + parseInt(nextDigit);
                 steps.push({
-                    type: 'q_digit',
-                    val: qDigit.toString(),
-                    msg: `Quantas vezes o ${divisor} cabe no ${currentVal}? (Dica: tabuada do ${divisor})`,
-                    helper: `Digite o quociente para ${currentVal} ÷ ${divisor}`
+                    type: 'rem',
+                    val: nextVal.toString(),
+                    valAlt: (rem === 0 ? nextDigit : nextVal.toString()),
+                    msg: `Subtraia ${sub} de ${currentVal} e abaixe o próximo número (${nextDigit}).`,
+                    helper: `Digite o resultado da sobra (abaixando o ${nextDigit}).`
                 });
-                
-                steps.push({
-                    type: 'sub',
-                    val: sub.toString(),
-                    msg: `Muito bem! ${qDigit} × ${divisor} = ${sub}. Vamos subtrair.`,
-                    helper: `Digite ${sub} para subtrair na lousa.`
-                });
-
-                if (idx < divStr.length - 1) {
-                    idx++;
-                    let nextDigit = divStr[idx];
-                    let nextVal = rem * 10 + parseInt(nextDigit);
-                    
-                    // Validação aceita o resto normal com o número do lado (ex: 3 ou 03)
+                currentVal = nextVal;
+            } else {
+                if (rem === 0) {
                     steps.push({
-                        type: 'rem',
-                        val: nextVal.toString(),
-                        valAlt: (rem === 0 ? nextDigit : nextVal.toString()), 
-                        msg: `Subtraia ${sub} de ${currentVal} e abaixe o próximo número (${nextDigit}).`,
-                        helper: `Digite o resultado da sobra (abaixando o ${nextDigit}).`
+                        type: 'rem_final',
+                        val: "0",
+                        msg: `Chegamos ao fim! Subtraia ${sub} de ${currentVal}.`,
+                        helper: `Digite o resto final (0).`
                     });
-                    currentVal = nextVal;
+                    break;
                 } else {
-                    if (rem === 0) {
+                    // Precisamos lidar com o resto e vírgula
+                    if (!isDecimal) {
                         steps.push({
-                            type: 'rem_final',
-                            val: "0",
-                            msg: `Chegamos ao fim! Subtraia ${sub} de ${currentVal}.`,
-                            helper: `Digite o resto final.`
+                            type: 'rem_pre_comma',
+                            val: rem.toString(),
+                            msg: `Subtraia ${sub} de ${currentVal}. Este é o resto.`,
+                            helper: `Digite o resto (${rem}).`
                         });
-                        break;
+                        steps.push({
+                            type: 'comma',
+                            val: ",",
+                            msg: `Sobrou ${rem} e não há mais números para abaixar. Hora da vírgula!`,
+                            helper: `Digite a vírgula ( , ) no teclado virtual!`
+                        });
+                        isDecimal = true;
+                        // Não reinicia o loop ainda, na próxima iteração gera o resto decimal
+                        // Precisamos transformar o resto em décimos
+                        // Vamos forçar a geração do próximo valor decimal
+                        let nextVal = rem * 10;
+                        steps.push({
+                            type: 'rem_decimal',
+                            val: nextVal.toString(),
+                            msg: `Adicione o zero mágico ao resto para continuarmos dividindo!`,
+                            helper: `Transforme o resto ${rem} em ${nextVal} décimos.`
+                        });
+                        currentVal = nextVal;
+                        precision++;
+                        continue; // vai para próxima iteração já com valor decimal
                     } else {
-                        if (!isDecimal) {
-                            steps.push({
-                                type: 'rem_pre_comma',
-                                val: rem.toString(),
-                                msg: `Subtraia ${sub} de ${currentVal}. Este é o resto.`,
-                                helper: `Digite o resto.`
-                            });
-                            steps.push({
-                                type: 'comma',
-                                val: ",",
-                                msg: `Sobrou ${rem} e não há mais números para abaixar. Hora da vírgula!`,
-                                helper: `Digite a vírgula ( , ) no teclado virtual!`
-                            });
-                            isDecimal = true;
-                        } else {
-                             steps.push({
-                                type: 'rem_pre_zero',
-                                val: rem.toString(),
-                                msg: `Subtraia ${sub} de ${currentVal}.`,
-                                helper: `Digite o resto decimal.`
-                            });
-                        }
+                        // Já estávamos nos decimais
+                        steps.push({
+                            type: 'rem_pre_zero',
+                            val: rem.toString(),
+                            msg: `Subtraia ${sub} de ${currentVal}.`,
+                            helper: `Digite o resto decimal (${rem}).`
+                        });
 
                         if (precision >= MAX_PRECISION) {
                             steps.push({
@@ -618,7 +297,7 @@
                             });
                             break;
                         }
-                        precision++;
+
                         let nextVal = rem * 10;
                         steps.push({
                             type: 'rem_decimal',
@@ -627,266 +306,290 @@
                             helper: `Transforme o resto ${rem} em ${nextVal} décimos/centésimos.`
                         });
                         currentVal = nextVal;
+                        precision++;
                     }
                 }
             }
-            return steps;
         }
+        return steps;
+    }
 
-        function renderizarInstrucaoAtual() {
-            const masterInput = document.getElementById('master-input');
-            const instrucao = document.getElementById('instrucao-lousa');
-            const helper = document.getElementById('lousa-helper');
+    function renderizarInstrucaoAtual() {
+        const masterInput = document.getElementById('master-input');
+        const instrucao = document.getElementById('instrucao-lousa');
+        const helper = document.getElementById('lousa-helper');
+        const btn = document.getElementById('btn-validar-lousa');
 
-            if (activeStepIndex >= dynamicSteps.length) {
-                instrucao.innerHTML = "💥 <strong>SENSACIONAL!</strong> Conta finalizada com perfeição!";
-                helper.innerText = "🎉 PARABÉNS! Você dominou o algoritmo!";
-                masterInput.value = "✔️";
-                masterInput.disabled = true;
-                masterInput.classList.remove('input-active', 'border-blue-400', 'text-blue-800');
-                masterInput.classList.add('border-emerald-500', 'text-emerald-600', 'bg-emerald-50');
-                
-                const btn = document.getElementById('btn-validar-lousa');
-                btn.innerHTML = `<span>CONCLUÍDO! (+30 XP)</span>`;
-                btn.className = "w-full bg-slate-400 text-white font-black py-4 px-6 rounded-2xl shadow-md transition-all text-lg flex items-center justify-center cursor-not-allowed";
-                
-                ganharXP(30);
-                triggerConfetti();
-                playSound('success');
-                return;
-            }
-
-            const step = dynamicSteps[activeStepIndex];
-            instrucao.innerHTML = step.msg;
-            helper.innerText = step.helper;
-            masterInput.value = "";
+        if (activeStepIndex >= dynamicSteps.length) {
+            instrucao.innerHTML = "💥 <strong>SENSACIONAL!</strong> Conta finalizada com perfeição!";
+            helper.innerText = "🎉 PARABÉNS! Você dominou o algoritmo!";
+            masterInput.value = "✔️";
+            masterInput.disabled = true;
+            masterInput.readOnly = true;
+            masterInput.className = "w-full text-center text-3xl font-black p-4 rounded-2xl border-4 border-emerald-500 focus:outline-none text-emerald-600 bg-emerald-50";
             
-            // Tratamento visual para o input na vírgula
-            if(step.type === 'comma') {
-                masterInput.classList.remove('text-blue-800');
-                masterInput.classList.add('text-pink-600', 'text-5xl');
-            } else {
-                masterInput.classList.add('text-blue-800');
-                masterInput.classList.remove('text-pink-600', 'text-5xl');
-            }
+            btn.innerHTML = `<span>CONCLUÍDO! (+30 XP)</span>`;
+            btn.className = "w-full bg-slate-400 text-white font-black py-4 px-6 rounded-2xl shadow-md transition-all text-lg flex items-center justify-center cursor-not-allowed";
+            
+            ganharXP(30);
+            triggerConfetti();
+            playSound('success');
+            return;
         }
 
-        function pressVirtualKey(key) {
-            playSound('click');
-            const input = document.getElementById('master-input');
-            if (input.disabled) return;
+        const step = dynamicSteps[activeStepIndex];
+        instrucao.innerHTML = step.msg;
+        helper.innerText = step.helper;
+        masterInput.value = "";
+        masterInput.className = "w-full text-center text-3xl font-black p-4 rounded-2xl border-4 border-blue-400 focus:outline-none input-active text-blue-800 bg-white";
+        masterInput.disabled = false;
+        masterInput.readOnly = false;
+    }
 
-            if (key === 'delete') {
-                input.value = input.value.slice(0, -1);
-            } else {
-                // Apenas insere se for número ou vírgula
-                if (input.value.length < 5) {
-                    input.value += key;
-                }
+    function pressVirtualKey(key) {
+        playSound('click');
+        const input = document.getElementById('master-input');
+        if (input.disabled) return;
+
+        if (key === 'delete') {
+            input.value = input.value.slice(0, -1);
+        } else {
+            if (input.value.length < 5) {
+                input.value += key;
             }
         }
+        // Mantém o foco para facilitar
+        input.focus();
+    }
 
-        function validarPassoDinamico() {
-            if (activeStepIndex >= dynamicSteps.length) return;
+    function validarPassoDinamico() {
+        console.log("Tentando validar passo..."); // Log para depuração
+        if (activeStepIndex >= dynamicSteps.length) return;
 
-            const input = document.getElementById('master-input');
-            const val = input.value.trim();
-            const step = dynamicSteps[activeStepIndex];
+        const input = document.getElementById('master-input');
+        const val = input.value.trim();
+        const step = dynamicSteps[activeStepIndex];
 
-            if (val === "") {
-                playSound('fail');
-                falarComLeoRapido("Ei! Escreva o valor correto usando o teclado virtual!");
-                return;
-            }
-
-            // Aceita val exato ou valAlt (casos onde 3 e 03 são aceitos visualmente)
-            if (val === step.val || val === step.valAlt) {
-                playSound('success');
-                ganharXP(5);
-                adicionarElementoNaLousa(step, val);
-                
-                activeStepIndex++;
-                renderizarInstrucaoAtual();
-            } else {
-                playSound('fail');
-                
-                // Dica Especial da Armadilha do Zero
-                if (step.type === 'q_digit' && step.val === '0' && val === ',') {
-                    falarComLeoRapido("⚠️ Armadilha do Zero! O número que você abaixou tem que ser dividido antes da vírgula! Ele cabe 0 vezes.");
-                } else {
-                    falarComLeoRapido(`Tente de novo! A resposta esperada era parecida com ${step.val}. Use sua tabuada!`);
-                }
-            }
+        if (!step) {
+            falarComLeoRapido("Ops! Passo não encontrado. Reinicie a conta.");
+            return;
         }
 
-        function adicionarElementoNaLousa(step, typedVal) {
-            const colDivd = document.getElementById('col-dividend');
-            const colQuoc = document.getElementById('div-quociente');
+        if (val === "") {
+            playSound('fail');
+            falarComLeoRapido("Ei! Escreva o valor correto usando o teclado virtual!");
+            input.className = "w-full text-center text-3xl font-black p-4 rounded-2xl border-4 border-red-400 focus:outline-none text-red-700 bg-red-50 animate-pulse";
+            setTimeout(() => {
+                input.className = "w-full text-center text-3xl font-black p-4 rounded-2xl border-4 border-blue-400 focus:outline-none input-active text-blue-800 bg-white";
+            }, 1500);
+            return;
+        }
 
-            if (step.type === 'q_digit') {
-                colQuoc.innerHTML += `<span>${typedVal}</span>`;
+        if (val === step.val || val === step.valAlt) {
+            playSound('success');
+            ganharXP(5);
+            adicionarElementoNaLousa(step, val);
+            
+            // Feedback visual de acerto
+            input.className = "w-full text-center text-3xl font-black p-4 rounded-2xl border-4 border-emerald-500 focus:outline-none text-emerald-700 bg-emerald-50";
+            setTimeout(() => {
+                input.className = "w-full text-center text-3xl font-black p-4 rounded-2xl border-4 border-blue-400 focus:outline-none input-active text-blue-800 bg-white";
+            }, 800);
+
+            activeStepIndex++;
+            renderizarInstrucaoAtual();
+        } else {
+            playSound('fail');
+            
+            // Feedback visual de erro
+            input.className = "w-full text-center text-3xl font-black p-4 rounded-2xl border-4 border-red-500 focus:outline-none text-red-700 bg-red-50 animate-pulse";
+            setTimeout(() => {
+                input.className = "w-full text-center text-3xl font-black p-4 rounded-2xl border-4 border-blue-400 focus:outline-none input-active text-blue-800 bg-white";
+            }, 1500);
+
+            let dicaExtra = `O valor esperado é: <strong>${step.val}</strong>. Tente novamente!`;
+            if (step.type === 'q_digit' && step.val === '0' && val === ',') {
+                dicaExtra = "⚠️ Armadilha do Zero! O número que você abaixou tem que ser dividido antes da vírgula! Ele cabe 0 vezes.";
             } else if (step.type === 'comma') {
-                colQuoc.innerHTML += `<span class="text-pink-500 mx-0.5 animate-bounce">,</span>`;
+                dicaExtra = "⚠️ Você precisa digitar a vírgula ( , ) neste passo!";
             } else if (step.type === 'sub') {
-                colDivd.innerHTML += `<div class="text-red-400 text-xl font-bold tracking-widest mt-1">- ${typedVal}</div>`;
-            } else if (step.type === 'rem' || step.type === 'rem_pre_comma' || step.type === 'rem_pre_zero') {
-                colDivd.innerHTML += `<div class="border-t-2 border-slate-600 text-slate-300 pt-1 text-2xl font-bold tracking-widest">${typedVal}</div>`;
-            } else if (step.type === 'rem_decimal') {
-                colDivd.innerHTML += `<div class="text-emerald-300 text-2xl font-bold tracking-widest mt-1">${typedVal} <span class="text-[10px] font-sans text-emerald-500 uppercase ml-1">décimos</span></div>`;
-            } else if (step.type === 'rem_final') {
-                if (step.val === "0") {
-                    colDivd.innerHTML += `<div class="border-t-2 border-slate-600 text-emerald-400 pt-1 font-black text-3xl tracking-widest mt-1">0</div>`;
-                } else {
-                    colDivd.innerHTML += `<div class="border-t-2 border-slate-600 text-yellow-400 pt-1 font-black text-2xl tracking-widest mt-1">${typedVal}</div>`;
-                }
+                dicaExtra = `Lembre-se: ${step.val} é o resultado da multiplicação do último quociente pelo divisor.`;
             }
+            falarComLeoRapido(dicaExtra);
+            // Mostra também na tela da lousa
+            document.getElementById('lousa-helper').innerHTML = `<span class="text-red-600">${dicaExtra}</span>`;
         }
+    }
 
-        // Detectar o pressionamento do teclado físico 
-        document.addEventListener('keydown', function(event) {
-            if (currentTab === 'armadilha') {
-                const activeEl = document.activeElement;
-                if (activeEl.id !== 'custom-divd' && activeEl.id !== 'custom-divs') {
-                    const key = event.key;
-                    if (/[0-9,]/.test(key)) {
-                        pressVirtualKey(key);
-                    } else if (key === 'Backspace') {
-                        pressVirtualKey('delete');
-                    } else if (key === 'Enter') {
-                        validarPassoDinamico();
-                    }
-                }
-            }
-        });
+    function adicionarElementoNaLousa(step, typedVal) {
+        const colDivd = document.getElementById('col-dividend');
+        const colQuoc = document.getElementById('div-quociente');
 
-
-        // --- LÓGICA DO MÓDULO 2: CANHÃO SUMI-VÍRGULA ---
-        let canhaoN1 = 56.4;
-        let canhaoN2 = 6;
-
-        function carregarCasoCanhao(n1, n2) {
-            playSound('click');
-            canhaoN1 = n1;
-            canhaoN2 = n2;
-
-            document.getElementById('canhao-divd').innerText = n1.toString().replace('.', ',');
-            document.getElementById('canhao-divs').innerText = n2.toString().replace('.', ',');
-
-            const dp1 = (n1.toString().includes('.')) ? n1.toString().split('.')[1].length : 0;
-            const dp2 = (n2.toString().includes('.')) ? n2.toString().split('.')[1].length : 0;
-
-            document.getElementById('canhao-divd-casas').innerText = `${dp1} casa(s) decimal(ais)`;
-            document.getElementById('canhao-divs-casas').innerText = `${dp2} casa(s) decimal(ais)`;
-
-            const feed = document.getElementById('canhao-feedback');
-            feed.classList.add('hidden');
-        }
-
-        function dispararCanhao(mult) {
-            const dp1 = (canhaoN1.toString().includes('.')) ? canhaoN1.toString().split('.')[1].length : 0;
-            const dp2 = (canhaoN2.toString().includes('.')) ? canhaoN2.toString().split('.')[1].length : 0;
-            const maxCasas = Math.max(dp1, dp2);
-            const multCorreto = Math.pow(10, maxCasas);
-
-            const feed = document.getElementById('canhao-feedback');
-            feed.classList.remove('hidden');
-
-            const finalN1 = Math.round(canhaoN1 * mult);
-            const finalN2 = Math.round(canhaoN2 * mult);
-
-            if (mult === multCorreto) {
-                playSound('success');
-                triggerConfetti();
-                ganharXP(20);
-
-                feed.className = "p-4 rounded-2xl text-center font-bold text-base border-2 bg-emerald-100 text-emerald-800 border-emerald-300 block";
-                feed.innerHTML = `🎯 ALVO ACERTADO! Multiplicando por <strong>${mult}</strong>, as vírgulas somem dos dois lados!<br>
-                A conta original se transforma em: <span class="text-2xl font-black block my-2 text-emerald-900">${finalN1} ÷ ${finalN2}</span>
-                Agora você pode jogar essa conta na Lousa Mágica sem problemas! (+20 XP)`;
+        if (step.type === 'q_digit') {
+            colQuoc.innerHTML += `<span>${typedVal}</span>`;
+        } else if (step.type === 'comma') {
+            colQuoc.innerHTML += `<span class="text-pink-500 mx-0.5 animate-bounce">,</span>`;
+        } else if (step.type === 'sub') {
+            colDivd.innerHTML += `<div class="text-red-400 text-xl font-bold tracking-widest mt-1">- ${typedVal}</div>`;
+        } else if (step.type === 'rem' || step.type === 'rem_pre_comma' || step.type === 'rem_pre_zero') {
+            colDivd.innerHTML += `<div class="border-t-2 border-slate-600 text-slate-300 pt-1 text-2xl font-bold tracking-widest">${typedVal}</div>`;
+        } else if (step.type === 'rem_decimal') {
+            colDivd.innerHTML += `<div class="text-emerald-300 text-2xl font-bold tracking-widest mt-1">${typedVal} <span class="text-[10px] font-sans text-emerald-500 uppercase ml-1">décimos</span></div>`;
+        } else if (step.type === 'rem_final') {
+            if (step.val === "0") {
+                colDivd.innerHTML += `<div class="border-t-2 border-slate-600 text-emerald-400 pt-1 font-black text-3xl tracking-widest mt-1">0</div>`;
             } else {
-                playSound('fail');
-                feed.className = "p-4 rounded-2xl text-center font-bold text-base border-2 bg-red-100 text-red-800 border-red-300 block";
-                
-                if (mult < multCorreto) {
-                    feed.innerHTML = `💥 Quase lá! O canhão disparou ×${mult}, mas a vírgula ainda sobrou em algum lugar. Escolha um multiplicador maior para eliminar todas as vírgulas!`;
-                } else {
-                    feed.innerHTML = `💥 Força exagerada! Você usou ×${mult}, o que elimina as vírgulas, mas deixa números grandes desnecessários (como ${finalN1} ÷ ${finalN2}). Use o menor multiplicador ideal!`;
+                colDivd.innerHTML += `<div class="border-t-2 border-slate-600 text-yellow-400 pt-1 font-black text-2xl tracking-widest mt-1">${typedVal}</div>`;
+            }
+        }
+    }
+
+    // Teclado físico: captura números, vírgula e Backspace
+    document.addEventListener('keydown', function(event) {
+        if (currentTab === 'armadilha') {
+            const activeEl = document.activeElement;
+            // Só bloqueia se o foco estiver nos campos de criação
+            if (activeEl.id !== 'custom-divd' && activeEl.id !== 'custom-divs') {
+                const key = event.key;
+                if (/[0-9,]/.test(key)) {
+                    event.preventDefault();
+                    pressVirtualKey(key);
+                } else if (key === 'Backspace') {
+                    event.preventDefault();
+                    pressVirtualKey('delete');
+                } else if (key === 'Enter') {
+                    event.preventDefault();
+                    validarPassoDinamico();
                 }
             }
         }
+    });
 
 
-        // --- LÓGICA DO MÓDULO 3: ARENA DE TREINO (QUIZ) ---
-        let perguntaAtiva = {};
-        const bancoPerguntas = [
-            { q: "Qual o resultado de 6 ÷ 5 em quociente decimal?", r: "1,2", t: "Divida 6 por 5. Sobra 1 de resto. Adicione a vírgula para transformar o resto em 10 décimos!" },
-            { q: "Se eliminarmos a vírgula de 56,4 ÷ 6 multiplicando por 10, qual conta teremos?", r: "564÷60", t: "Multiplicar por 10 desloca a vírgula uma casa para a direita nos dois lados!" },
-            { q: "Dona Joaquina quer dividir 10 chocolates para 8 netos. Quanto ganha cada neto?", r: "1,25", t: "Primeiro distribua 1 inteiro para cada. Os 2 de resto viram 20 décimos!" },
-            { q: "Qual o resultado de 123 dividido por 6?", r: "20,5", t: "Lembre-se da lousa! Cuidado com o zero após abaixar o 3!" },
-            { q: "Se dividirmos 3 por 20, quanto dá o quociente decimal?", r: "0,15", t: "3 é menor que 20. Comece colocando 0, no quociente para transformar em 30 décimos!" },
-            { q: "Ao dividir 25 por 3, temos uma dízima periódica. Qual algarismo se repete infinitamente?", r: "3", t: "Dica: 8,3333... Colocamos um traço no algarismo que é o período." }
-        ];
+    // --- LÓGICA DO MÓDULO 2: CANHÃO SUMI-VÍRGULA (sem alterações) ---
+    let canhaoN1 = 56.4;
+    let canhaoN2 = 6;
 
-        function carregarPerguntaArena() {
-            document.getElementById('arena-feedback').classList.add('hidden');
-            document.getElementById('arena-answer').value = '';
+    function carregarCasoCanhao(n1, n2) {
+        playSound('click');
+        canhaoN1 = n1;
+        canhaoN2 = n2;
 
-            const idx = Math.floor(Math.random() * bancoPerguntas.length);
-            perguntaAtiva = bancoPerguntas[idx];
+        document.getElementById('canhao-divd').innerText = n1.toString().replace('.', ',');
+        document.getElementById('canhao-divs').innerText = n2.toString().replace('.', ',');
 
-            document.getElementById('arena-question').innerText = perguntaAtiva.q;
-            document.getElementById('arena-tip').innerText = `Dica do Leo: ${perguntaAtiva.t}`;
-        }
+        const dp1 = (n1.toString().includes('.')) ? n1.toString().split('.')[1].length : 0;
+        const dp2 = (n2.toString().includes('.')) ? n2.toString().split('.')[1].length : 0;
 
-        function verificarQuiz() {
-            const rawAns = document.getElementById('arena-answer').value.trim().replace(/\s/g, '').replace(',', '.');
-            const targetAns = perguntaAtiva.r.replace(',', '.');
+        document.getElementById('canhao-divd-casas').innerText = `${dp1} casa(s) decimal(ais)`;
+        document.getElementById('canhao-divs-casas').innerText = `${dp2} casa(s) decimal(ais)`;
 
-            const feedback = document.getElementById('arena-feedback');
-            feedback.classList.remove('hidden');
+        const feed = document.getElementById('canhao-feedback');
+        feed.classList.add('hidden');
+    }
 
-            if (rawAns === "") {
-                playSound('fail');
-                feedback.className = "mt-6 p-4 rounded-2xl text-center font-bold border-2 bg-amber-100 text-amber-800 border-amber-300 block";
-                feedback.innerHTML = "⚠️ Por favor, digite um número antes de enviar!";
-                return;
-            }
+    function dispararCanhao(mult) {
+        const dp1 = (canhaoN1.toString().includes('.')) ? canhaoN1.toString().split('.')[1].length : 0;
+        const dp2 = (canhaoN2.toString().includes('.')) ? canhaoN2.toString().split('.')[1].length : 0;
+        const maxCasas = Math.max(dp1, dp2);
+        const multCorreto = Math.pow(10, maxCasas);
 
-            if (rawAns === targetAns) {
-                playSound('success');
-                triggerConfetti();
-                ganharXP(25);
+        const feed = document.getElementById('canhao-feedback');
+        feed.classList.remove('hidden');
 
-                feedback.className = "mt-6 p-4 rounded-2xl text-center font-bold border-2 bg-emerald-100 text-emerald-800 border-emerald-300 block";
-                feedback.innerHTML = `🎉 ABSOLUTAMENTE CORRETO! O dragão Leo ganhou +25 XP!`;
-                
-                setTimeout(() => {
-                    carregarPerguntaArena();
-                }, 2500);
+        const finalN1 = Math.round(canhaoN1 * mult);
+        const finalN2 = Math.round(canhaoN2 * mult);
+
+        if (mult === multCorreto) {
+            playSound('success');
+            triggerConfetti();
+            ganharXP(20);
+
+            feed.className = "p-4 rounded-2xl text-center font-bold text-base border-2 bg-emerald-100 text-emerald-800 border-emerald-300 block";
+            feed.innerHTML = `🎯 ALVO ACERTADO! Multiplicando por <strong>${mult}</strong>, as vírgulas somem dos dois lados!<br>
+            A conta original se transforma em: <span class="text-2xl font-black block my-2 text-emerald-900">${finalN1} ÷ ${finalN2}</span>
+            Agora você pode jogar essa conta na Lousa Mágica sem problemas! (+20 XP)`;
+        } else {
+            playSound('fail');
+            feed.className = "p-4 rounded-2xl text-center font-bold text-base border-2 bg-red-100 text-red-800 border-red-300 block";
+            
+            if (mult < multCorreto) {
+                feed.innerHTML = `💥 Quase lá! O canhão disparou ×${mult}, mas a vírgula ainda sobrou em algum lugar. Escolha um multiplicador maior para eliminar todas as vírgulas!`;
             } else {
-                playSound('fail');
-                feedback.className = "mt-6 p-4 rounded-2xl text-center font-bold border-2 bg-red-100 text-red-800 border-red-300 block";
-                feedback.innerHTML = `❌ Ops, quase lá! A resposta correta é ${perguntaAtiva.r}. Use uma folha de rascunho e tente novamente!`;
+                feed.innerHTML = `💥 Força exagerada! Você usou ×${mult}, o que elimina as vírgulas, mas deixa números grandes desnecessários (como ${finalN1} ÷ ${finalN2}). Use o menor multiplicador ideal!`;
             }
         }
+    }
 
-        function pularPergunta() {
-            playSound('click');
-            carregarPerguntaArena();
+
+    // --- LÓGICA DO MÓDULO 3: ARENA DE TREINO (sem alterações) ---
+    let perguntaAtiva = {};
+    const bancoPerguntas = [
+        { q: "Qual o resultado de 6 ÷ 5 em quociente decimal?", r: "1,2", t: "Divida 6 por 5. Sobra 1 de resto. Adicione a vírgula para transformar o resto em 10 décimos!" },
+        { q: "Se eliminarmos a vírgula de 56,4 ÷ 6 multiplicando por 10, qual conta teremos?", r: "564÷60", t: "Multiplicar por 10 desloca a vírgula uma casa para a direita nos dois lados!" },
+        { q: "Dona Joaquina quer dividir 10 chocolates para 8 netos. Quanto ganha cada neto?", r: "1,25", t: "Primeiro distribua 1 inteiro para cada. Os 2 de resto viram 20 décimos!" },
+        { q: "Qual o resultado de 123 dividido por 6?", r: "20,5", t: "Lembre-se da lousa! Cuidado com o zero após abaixar o 3!" },
+        { q: "Se dividirmos 3 por 20, quanto dá o quociente decimal?", r: "0,15", t: "3 é menor que 20. Comece colocando 0, no quociente para transformar em 30 décimos!" },
+        { q: "Ao dividir 25 por 3, temos uma dízima periódica. Qual algarismo se repete infinitamente?", r: "3", t: "Dica: 8,3333... Colocamos um traço no algarismo que é o período." }
+    ];
+
+    function carregarPerguntaArena() {
+        document.getElementById('arena-feedback').classList.add('hidden');
+        document.getElementById('arena-answer').value = '';
+
+        const idx = Math.floor(Math.random() * bancoPerguntas.length);
+        perguntaAtiva = bancoPerguntas[idx];
+
+        document.getElementById('arena-question').innerText = perguntaAtiva.q;
+        document.getElementById('arena-tip').innerText = `Dica do Leo: ${perguntaAtiva.t}`;
+    }
+
+    function verificarQuiz() {
+        const rawAns = document.getElementById('arena-answer').value.trim().replace(/\s/g, '').replace(',', '.');
+        const targetAns = perguntaAtiva.r.replace(',', '.');
+
+        const feedback = document.getElementById('arena-feedback');
+        feedback.classList.remove('hidden');
+
+        if (rawAns === "") {
+            playSound('fail');
+            feedback.className = "mt-6 p-4 rounded-2xl text-center font-bold border-2 bg-amber-100 text-amber-800 border-amber-300 block";
+            feedback.innerHTML = "⚠️ Por favor, digite um número antes de enviar!";
+            return;
         }
 
-        // --- INICIALIZAÇÃO AUTOMÁTICA ---
-        window.onload = function() {
-            atualizarProgressoVisual();
+        if (rawAns === targetAns) {
+            playSound('success');
+            triggerConfetti();
+            ganharXP(25);
+
+            feedback.className = "mt-6 p-4 rounded-2xl text-center font-bold border-2 bg-emerald-100 text-emerald-800 border-emerald-300 block";
+            feedback.innerHTML = `🎉 ABSOLUTAMENTE CORRETO! O dragão Leo ganhou +25 XP!`;
             
-            // Preset do caso base ensinado (123 / 6)
-            document.getElementById('custom-divd').value = "123";
-            document.getElementById('custom-divs').value = "6";
-            iniciarContaDinamica();
-            
-            carregarCasoCanhao(56.4, 6);
-            carregarPerguntaArena();
-        };
-    </script>
-</body>
-</html>
+            setTimeout(() => {
+                carregarPerguntaArena();
+            }, 2500);
+        } else {
+            playSound('fail');
+            feedback.className = "mt-6 p-4 rounded-2xl text-center font-bold border-2 bg-red-100 text-red-800 border-red-300 block";
+            feedback.innerHTML = `❌ Ops, quase lá! A resposta correta é ${perguntaAtiva.r}. Use uma folha de rascunho e tente novamente!`;
+        }
+    }
+
+    function pularPergunta() {
+        playSound('click');
+        carregarPerguntaArena();
+    }
+
+    // --- INICIALIZAÇÃO AUTOMÁTICA ---
+    window.onload = function() {
+        atualizarProgressoVisual();
+        
+        document.getElementById('custom-divd').value = "123";
+        document.getElementById('custom-divs').value = "6";
+        iniciarContaDinamica();
+        
+        carregarCasoCanhao(56.4, 6);
+        carregarPerguntaArena();
+    };
+</script>
