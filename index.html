@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mestre dos Decimais: Multiplicação e Divisão!</title>
+    <style>
+        :root {
+            --primary: #4A90E2;
+            --secondary: #F5A623;
+            --success: #2ECC71;
+            --danger: #E74C3C;
+            --bg: #F0F4F8;
+            --card-bg: #FFFFFF;
+            --text: #2C3E50;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Ubuntu', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, var(--primary), #357ABD);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 { margin: 0; font-size: 2.2rem; }
+        p.subtitle { margin: 5px 0 0; font-size: 1.1rem; opacity: 0.9; }
+
+        .container {
+            max-width: 850px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 3px solid #E1E8ED;
+            transition: transform 0.2s;
+        }
+
+        .card:hover { border-color: var(--primary); }
+
+        h2 {
+            color: var(--primary);
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px dashed #E1E8ED;
+            padding-bottom: 10px;
+        }
+
+        .interactive-zone {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            background-color: #F9FBFC;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 15px;
+        }
+
+        .math-box {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="number"], select {
+            font-size: 1.3rem;
+            padding: 8px 12px;
+            border: 2px solid #CCD6DD;
+            border-radius: 8px;
+            width: 100px;
+            text-align: center;
+            color: #14171A;
+            font-family: inherit;
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .btn {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .btn-primary { background-color: var(--primary); }
+        .btn-success { background-color: var(--success); }
+
+        .explanation-bubble {
+            background-color: #EBF5FB;
+            border-left: 6px solid var(--primary);
+            padding: 15px;
+            border-radius: 4px 12px 12px 4px;
+            margin-top: 15px;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .highlight {
+            color: #D35400;
+            font-weight: bold;
+            background-color: #FDEDEC;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            text-align: center;
+        }
+        .question {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .feedback {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            display: none;
+        }
+        .feedback.correct {
+            background-color: #D4EFDF;
+            color: #196F3D;
+            display: block;
+        }
+        .feedback.wrong {
+            background-color: #FADBD8;
+            color: #78281F;
+            display: block;
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            background-color: #EAEDED;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .badge {
+            font-size: 2rem;
+            transition: transform 0.3s;
+        }
+        .bounce { transform: scale(1.3); }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🎯 Mestre dos Números Decimais!</h1>
+    <p class="subtitle">Aprenda Multiplicação e Divisão com vírgula jogando e descobrindo os segredos!</p>
+</header>
+
+<div class="container">
+
+    <div class="card">
+        <h2>💡 1. Laboratório da Multiplicação Interativa</h2>
+        <p><strong>A Regra de Ouro da Prof. Gis:</strong> Multiplique como se as vírgulas não existissem! No final, conte as casas decimais (números depois da vírgula) de todo mundo e junte-as no resultado! 🔮</p>
+        
+        <div class="interactive-zone">
+            <div class="math-box">
+                <input type="number" id="mult1" value="1.25" step="0.01" oninput="calcularLaboratorioMult()">
+                <span>×</span>
+                <input type="number" id="mult2" value="7" step="0.1" oninput="calcularLaboratorioMult()">
+                <span>=</span>
+                <span id="multResult" style="color: var(--success);">8.75</span>
+            </div>
+        </div>
+
+        <div class="explanation-bubble" id="multExplanation">
+            </div>
+    </div>
+
+    <div class="card">
+        <h2>✂️ 2. Detonador de Vírgulas na Divisão</h2>
+        <p>Para dividir números com vírgula, o segredo real oficial é <strong>multiplicar por 10, 100 ou 1000</strong> para a vírgula andar para a direita até sumir! Você precisa igualar as casas! Veja como acontece:</p>
+        
+        <div class="interactive-zone">
+            <div class="math-box">
+                <select id="div1" onchange="atualizarLaboratorioDiv()">
+                    <option value="56.4">56,4</option>
+                    <option value="22.22">22,22</option>
+                    <option value="6">6</option>
+                </select>
+                <span>÷</span>
+                <select id="div2" onchange="atualizarLaboratorioDiv()">
+                    <option value="6">6</option>
+                    <option value="2.2">2,2</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="explanation-bubble" id="divExplanation">
+            </div>
+    </div>
+
+    <div class="card quiz-container">
+        <h2>🏆 3. Desafio do Conhecimento (Exercício Prático)</h2>
+        <p>Resolva os desafios abaixo para ganhar pontos e conquistar suas insígnias de Matemática!</p>
+        
+        <div id="quiz-box">
+            <div class="question" id="quiz-question">Carregando pergunta...</div>
+            <div style="margin-bottom: 15px;">
+                <input type="number" id="quiz-answer" step="0.001" placeholder="Sua resposta" style="width: 160px; font-size: 1.5rem;">
+            </div>
+            <button class="btn btn-success" onclick="verificarResposta()">Verificar Resposta</button>
+            <button class="btn btn-primary" onclick="gerarPergunta()">Próxima Pergunta ➡️</button>
+            
+            <div class="feedback" id="quiz-feedback"></div>
+        </div>
+
+        <div class="score-board">
+            <div>Pontuação: <strong id="score" style="color: var(--primary);">0</strong></div>
+            <div>Medalhas: <span id="badge-icon" class="badge">🥚</span> <span id="badge-name" style="font-weight: bold;">Iniciante</span></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // --- LÓGICA DO MÓDULO 1: MULTIPLICAÇÃO ---
+    function contarCasasDecimais(num) {
+        const match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+        if (!match) { return 0; }
+        return Math.max(0, (match[1] ? match[1].length : 0) - (match[2] ? +match[2] : 0));
+    }
+
+    function calcularLaboratorioMult() {
+        const n1 = parseFloat(document.getElementById('mult1').value) || 0;
+        const n2 = parseFloat(document.getElementById('mult2').value) || 0;
+        
+        const resultado = (n1 * n2).toFixed(contarCasasDecimais(n1) + contarCasasDecimais(n2));
+        document.getElementById('multResult').innerText = parseFloat(resultado).toLocaleString('pt-BR', {maximumFractionDigits: 10});
+
+        const casasN1 = contarCasasDecimais(n1);
+        const casasN2 = contarCasasDecimais(n2);
+        const totalCasas = casasN1 + casasN2;
+
+        // Representação sem vírgula
+        const n1SemV = Math.round(n1 * Math.pow(10, casasN1));
+        const n2SemV = Math.round(n2 * Math.pow(10, casasN2));
+        const respSemV = n1SemV * n2SemV;
+
+        document.getElementById('multExplanation').innerHTML = `
+            🔍 <strong>Passo a passo do que está acontecendo:</strong><br>
+            1. Primeiro, fazemos a conta normal ignorando as vírgulas: <code>${n1SemV} × ${n2SemV} = ${respSemV}</code>.<br>
+            2. Agora contamos as casas decimais à direita da vírgula:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;• O primeiro número tem <span class="highlight">${casasN1} casa(s)</span>.<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;• O segundo número tem <span class="highlight">${casasN2} casa(s)</span>.<br>
+            3. <strong>Somamos as casas:</strong> ${casasN1} + ${casasN2} = <span class="highlight">${totalCasas} casa(s) no total</span>.<br>
+            4. Pegamos o número <code>${respSemV}</code> e andamos com a vírgula <span class="highlight">${totalCasas} vezes para a esquerda</span> a partir do final. Resultado final: <strong>${parseFloat(resultado).toLocaleString('pt-BR')}</strong>!
+        `;
+    }
+
+    // --- LÓGICA DO MÓDULO 2: DIVISÃO ---
+    function atualizarLaboratorioDiv() {
+        const n1 = parseFloat(document.getElementById('div1').value);
+        const n2 = parseFloat(document.getElementById('div2').value);
+        
+        const casasN1 = contarCasasDecimais(n1);
+        const casasN2 = contarCasasDecimais(n2);
+        const maxCasas = Math.max(casasN1, casasN2);
+        const multiplicador = Math.pow(10, maxCasas);
+
+        const n1Inteiro = n1 * multiplicador;
+        const n2Inteiro = n2 * multiplicador;
+        const resultadoFinal = (n1 / n2).toFixed(2);
+
+        let textoMultiplicar = `Como a maior quantidade de casas decimais é <strong>${maxCasas}</strong>, vamos multiplicar os dois lados por <strong>${multiplicador}</strong>!`;
+        if (maxCasas === 0) {
+            textoMultiplicar = `Os dois números já são inteiros! Não precisamos eliminar nenhuma vírgula.`;
+        }
+
+        document.getElementById('divExplanation').innerHTML = `
+            ⚡ <strong>Como transformar em uma conta sem vírgula:</strong><br>
+            • Conta original: <code>${n1.toLocaleString('pt-BR')} ÷ ${n2.toLocaleString('pt-BR')}</code><br>
+            • ${textoMultiplicar}<br>
+            • A conta real e oficial vira: <span class="highlight">${n1Inteiro} ÷ ${n2Inteiro}</span><br>
+            • Dividindo normalmente, o resultado (quociente) é: <strong style="color:var(--success); font-size:1.2rem;">${parseFloat(resultadoFinal).toLocaleString('pt-BR')}</strong> 
+            ${n1Inteiro % n2Inteiro !== 0 ? ' *(com quociente decimal após a sobra!)*' : ' *(divisão exata!)*'}
+        `;
+    }
+
+    // --- LÓGICA DO MÓDULO 3: QUIZ (EXERCÍCIO) ---
+    let perguntaAtual = {};
+    let pontuacao = 0;
+
+    const bancoPerguntas = [
+        { tipo: 'mult', n1: 1.2, n2: 4, pergunta: "Quanto é 1,2 × 4?", resposta: 4.8 },
+        { tipo: 'mult', n1: 0.5, n2: 0.6, pergunta: "Pense nas casas decimais: Quanto é 0,5 × 0,6?", resposta: 0.3 },
+        { tipo: 'mult', n1: 2.5, n2: 3, pergunta: "Dona Maria comprou 3 barras de doce por R$ 2,50 cada. Quanto ela gastou? (Calcule 2,5 × 3)", resposta: 7.5 },
+        { tipo: 'div_q', n1: 6, n2: 5, pergunta: "Se você dividir 6 chocolates para 5 amigos, quanto cada um ganha em números decimais? (6 ÷ 5)", resposta: 1.2 },
+        { tipo: 'div_v', n1: 4.8, n2: 2, pergunta: "Se eliminarmos a vírgula multiplicando por 10, a conta 4,8 ÷ 2 vira 48 ÷ 20. Qual o resultado?", resposta: 2.4 },
+        { tipo: 'mult', n1: 12.5, n2: 10, pergunta: "Regra rápida: Quanto dá 12,5 multiplicado por 10 (andar uma casa para a direita)?", resposta: 125 },
+        { tipo: 'div_q', n1: 10, n2: 4, pergunta: "Dona Joaquina quer dividir 10 barras de chocolate igualmente entre 4 netos. Quanto ganha cada um? (10 ÷ 4)", resposta: 2.5 }
+    ];
+
+    function gerarPergunta() {
+        document.getElementById('quiz-feedback').className = 'feedback';
+        document.getElementById('quiz-feedback').innerText = '';
+        document.getElementById('quiz-answer').value = '';
+        
+        // Sorteia uma pergunta do banco
+        const indice = Math.floor(Math.random() * bancoPerguntas.length);
+        perguntaAtual = bancoPerguntas[indice];
+        
+        document.getElementById('quiz-question').innerText = perguntaAtual.pergunta;
+    }
+
+    function verificarResposta() {
+        const respUsuario = parseFloat(document.getElementById('quiz-answer').value);
+        const feedbackDiv = document.getElementById('quiz-feedback');
+        
+        if (isNaN(respUsuario)) {
+            feedbackDiv.className = 'feedback wrong';
+            feedbackDiv.innerText = '⚠️ Por favor, digite um número antes de verificar!';
+            return;
+        }
+
+        // Evitar problemas de precisão do JS usando aproximação muito fina
+        if (Math.abs(respUsuario - perguntaAtual.resposta) < 0.01) {
+            feedbackDiv.className = 'feedback correct';
+            feedbackDiv.innerText = '🎉 Incrível! Você acertou em cheio!';
+            pontuacao += 10;
+        } else {
+            feedbackDiv.className = 'feedback wrong';
+            feedbackDiv.innerText = `💥 Quase lá! A resposta correta era ${perguntaAtual.resposta.toLocaleString('pt-BR')}. Lembre-se das regrinhas da vírgula!`;
+            if(pontuacao > 0) pontuacao -= 5;
+        }
+
+        document.getElementById('score').innerText = pontuacao;
+        atualizarMedalha();
+    }
+
+    function atualizarMedalha() {
+        const icon = document.getElementById('badge-icon');
+        const name = document.getElementById('badge-name');
+        
+        icon.classList.add('bounce');
+        setTimeout(() => icon.classList.remove('bounce'), 300);
+
+        if (pontuacao >= 50) {
+            icon.innerText = '👑';
+            name.innerText = 'Rei/Rainha dos Decimais';
+            name.style.color = '#9B59B6';
+        } else if (pontuacao >= 30) {
+            icon.innerText = '🥇';
+            name.innerText = 'Matemático de Ouro';
+            name.style.color = var(--secondary);
+        } else if (pontuacao >= 10) {
+            icon.innerText = '🚀';
+            name.innerText = 'Aprendiz Veloz';
+            name.style.color = var(--primary);
+        } else {
+            icon.innerText = '🥚';
+            name.innerText = 'Iniciante';
+            name.style.color = '#7F8C8D';
+        }
+    }
+
+    // Inicializar os laboratórios ao carregar a página
+    calcularLaboratorioMult();
+    atualizarLaboratorioDiv();
+    gerarPergunta();
+</script>
+
+</body>
+</html>
