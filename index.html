@@ -1,415 +1,810 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mestre dos Decimais: Multiplicação e Divisão!</title>
+    <title>Mestre dos Decimais: Exercício Interativo</title>
+    <!-- Tailwind CSS para um design moderno e responsivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fontes para uma tipografia amigável e infantil -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome para ícones expressivos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        :root {
-            --primary: #4A90E2;
-            --secondary: #F5A623;
-            --success: #2ECC71;
-            --danger: #E74C3C;
-            --bg: #F0F4F8;
-            --card-bg: #FFFFFF;
-            --text: #2C3E50;
-        }
-
         body {
-            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Ubuntu', sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            font-family: 'Fredoka', sans-serif;
+            background-color: #f0f9ff;
         }
-
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            background: linear-gradient(135deg, var(--primary), #357ABD);
-            color: white;
-            padding: 20px 40px;
-            border-radius: 20px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-            max-width: 800px;
-            width: 100%;
+        /* Estilos personalizados para os balões de diálogo */
+        .dialog-bubble::after {
+            content: '';
+            position: absolute;
+            left: 20px;
+            bottom: -10px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 10px solid #ffffff;
         }
-
-        h1 { margin: 0; font-size: 2.2rem; }
-        p.subtitle { margin: 5px 0 0; font-size: 1.1rem; opacity: 0.9; }
-
-        .container {
-            max-width: 850px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
-
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            border: 3px solid #E1E8ED;
-            transition: transform 0.2s;
-        }
-
-        .card:hover { border-color: var(--primary); }
-
-        h2 {
-            color: var(--primary);
-            margin-top: 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-bottom: 2px dashed #E1E8ED;
-            padding-bottom: 10px;
-        }
-
-        .interactive-zone {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            align-items: center;
-            justify-content: center;
-            background-color: #F9FBFC;
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 15px;
-        }
-
-        .math-box {
-            font-size: 1.8rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        input[type="number"], select {
-            font-size: 1.3rem;
-            padding: 8px 12px;
-            border: 2px solid #CCD6DD;
-            border-radius: 8px;
-            width: 100px;
-            text-align: center;
-            color: #14171A;
-            font-family: inherit;
-        }
-
-        input[type="number"]:focus {
-            border-color: var(--primary);
-            outline: none;
-        }
-
-        .btn {
-            background-color: var(--secondary);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 25px;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: all 0.2s;
-            font-family: inherit;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-        }
-
-        .btn-primary { background-color: var(--primary); }
-        .btn-success { background-color: var(--success); }
-
-        .explanation-bubble {
-            background-color: #EBF5FB;
-            border-left: 6px solid var(--primary);
-            padding: 15px;
-            border-radius: 4px 12px 12px 4px;
-            margin-top: 15px;
-            font-size: 1rem;
-            line-height: 1.5;
-        }
-
-        .highlight {
-            color: #D35400;
-            font-weight: bold;
-            background-color: #FDEDEC;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
-        /* Quiz Styles */
-        .quiz-container {
-            text-align: center;
-        }
-        .question {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
-        .feedback {
-            margin-top: 15px;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: bold;
-            display: none;
-        }
-        .feedback.correct {
-            background-color: #D4EFDF;
-            color: #196F3D;
-            display: block;
-        }
-        .feedback.wrong {
-            background-color: #FADBD8;
-            color: #78281F;
-            display: block;
-        }
-
-        .score-board {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 20px;
-            font-size: 1.2rem;
-            background-color: #EAEDED;
-            padding: 10px;
-            border-radius: 10px;
-        }
-
-        .badge {
-            font-size: 2rem;
-            transition: transform 0.3s;
-        }
-        .bounce { transform: scale(1.3); }
     </style>
 </head>
-<body>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between selection:bg-amber-200">
 
-<header>
-    <h1>🎯 Mestre dos Números Decimais!</h1>
-    <p class="subtitle">Aprenda Multiplicação e Divisão com vírgula jogando e descobrindo os segredos!</p>
-</header>
-
-<div class="container">
-
-    <div class="card">
-        <h2>💡 1. Laboratório da Multiplicação Interativa</h2>
-        <p><strong>A Regra de Ouro da Prof. Gis:</strong> Multiplique como se as vírgulas não existissem! No final, conte as casas decimais (números depois da vírgula) de todo mundo e junte-as no resultado! 🔮</p>
+    <!-- Cabeçalho Principal -->
+    <header class="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 text-white shadow-xl py-6 px-4 rounded-b-[2rem] text-center relative overflow-hidden">
+        <div class="absolute -top-10 -left-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+        <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
         
-        <div class="interactive-zone">
-            <div class="math-box">
-                <input type="number" id="mult1" value="1.25" step="0.01" oninput="calcularLaboratorioMult()">
-                <span>×</span>
-                <input type="number" id="mult2" value="7" step="0.1" oninput="calcularLaboratorioMult()">
-                <span>=</span>
-                <span id="multResult" style="color: var(--success);">8.75</span>
-            </div>
-        </div>
+        <h1 class="text-3xl md:text-5xl font-bold tracking-wide flex items-center justify-center gap-3">
+            <i class="fa-solid fa-calculator text-amber-300 animate-bounce"></i>
+            Academia dos Decimais!
+        </h1>
+        <p class="text-indigo-100 text-sm md:text-lg mt-2 font-medium">
+            Multiplicações e divisões com vírgula de forma divertida e sem medos! 🎯
+        </p>
+    </header>
 
-        <div class="explanation-bubble" id="multExplanation">
-            </div>
-    </div>
+    <!-- Navegação Interativa -->
+    <nav class="max-w-4xl w-full mx-auto px-4 mt-6 grid grid-cols-3 gap-2 md:gap-4">
+        <button onclick="switchTab('multiplicacao')" id="btn-tab-multiplicacao" class="tab-btn py-3 px-2 md:px-4 rounded-2xl font-bold text-xs md:text-base flex flex-col md:flex-row items-center justify-center gap-2 transition-all shadow-md bg-indigo-600 text-white transform -translate-y-1">
+            <i class="fa-solid fa-times-circle text-lg text-amber-300"></i>
+            <span>Multiplicar</span>
+        </button>
+        <button onclick="switchTab('divisao')" id="btn-tab-divisao" class="tab-btn py-3 px-2 md:px-4 rounded-2xl font-bold text-xs md:text-base flex flex-col md:flex-row items-center justify-center gap-2 transition-all shadow-md bg-white text-slate-600 hover:bg-indigo-50">
+            <i class="fa-solid fa-divide text-lg text-indigo-500"></i>
+            <span>Divisão Visual</span>
+        </button>
+        <button onclick="switchTab('quiz')" id="btn-tab-quiz" class="tab-btn py-3 px-2 md:px-4 rounded-2xl font-bold text-xs md:text-base flex flex-col md:flex-row items-center justify-center gap-2 transition-all shadow-md bg-white text-slate-600 hover:bg-indigo-50">
+            <i class="fa-solid fa-trophy text-lg text-yellow-500"></i>
+            <span>Desafios</span>
+        </button>
+    </nav>
 
-    <div class="card">
-        <h2>✂️ 2. Detonador de Vírgulas na Divisão</h2>
-        <p>Para dividir números com vírgula, o segredo real oficial é <strong>multiplicar por 10, 100 ou 1000</strong> para a vírgula andar para a direita até sumir! Você precisa igualar as casas! Veja como acontece:</p>
+    <!-- Conteúdo Principal -->
+    <main class="max-w-4xl w-full mx-auto px-4 flex-grow my-6">
+
+        <!-- ================= TAB: MULTIPLICAÇÃO ================= -->
+        <section id="tab-multiplicacao" class="tab-content block animate-fadeIn">
+            <div class="bg-white rounded-3xl p-6 shadow-xl border-4 border-indigo-200">
+                <!-- Personagem Conselheiro -->
+                <div class="flex items-start gap-4 mb-6">
+                    <div class="bg-amber-100 p-3 rounded-2xl text-3xl shrink-0 animate-pulse">👩‍🏫</div>
+                    <div class="bg-indigo-50 border border-indigo-100 p-4 rounded-2xl relative flex-grow text-sm md:text-base">
+                        <p class="font-semibold text-indigo-900 mb-1">Dica de Ouro da Prof. Gis:</p>
+                        "Multiplica como se as vírgulas não existissem! No final, conta as casas decimais de todos os números e coloca-as no resultado final!"
+                    </div>
+                </div>
+
+                <h3 class="text-2xl font-bold text-indigo-800 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-flask text-indigo-500"></i>
+                    Laboratório Interativo de Multiplicação
+                </h3>
+                <p class="text-slate-600 text-sm mb-6">Escolhe dois números decimais para ver como a mágica da vírgula acontece passo a passo!</p>
+
+                <!-- Inputs do Laboratório -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center justify-center bg-slate-50 p-6 rounded-2xl border-2 border-slate-100 mb-6">
+                    <div class="text-center">
+                        <label class="block text-sm font-bold text-slate-500 mb-2">Fator 1</label>
+                        <input type="number" id="lab-m1" value="1.25" step="0.01" class="w-full text-center text-2xl font-bold p-3 rounded-xl border-4 border-indigo-200 focus:border-indigo-500 focus:outline-none">
+                        <span id="lab-m1-casas" class="text-xs text-indigo-600 font-bold mt-1 block"></span>
+                    </div>
+                    <div class="text-center text-4xl font-black text-indigo-400">×</div>
+                    <div class="text-center">
+                        <label class="block text-sm font-bold text-slate-500 mb-2">Fator 2</label>
+                        <input type="number" id="lab-m2" value="0.3" step="0.1" class="w-full text-center text-2xl font-bold p-3 rounded-xl border-4 border-indigo-200 focus:border-indigo-500 focus:outline-none">
+                        <span id="lab-m2-casas" class="text-xs text-indigo-600 font-bold mt-1 block"></span>
+                    </div>
+                </div>
+
+                <!-- Botão de Ação -->
+                <div class="text-center mb-8">
+                    <button onclick="processarLaboratorioMult()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-lg px-8 py-3 rounded-2xl shadow-lg transition-transform active:scale-95">
+                        Ver Passo a Passo 🚀
+                    </button>
+                </div>
+
+                <!-- Painel de Passos Interativos -->
+                <div id="mult-steps-box" class="hidden space-y-4">
+                    <!-- Passo 1 -->
+                    <div class="p-4 bg-amber-50 rounded-2xl border border-amber-200 flex items-start gap-3">
+                        <span class="bg-amber-400 text-white w-7 h-7 rounded-full flex items-center justify-center font-bold shrink-0">1</span>
+                        <div>
+                            <h4 class="font-bold text-amber-900">Ignorar as Vírgulas e Multiplicar</h4>
+                            <p class="text-slate-600 text-sm mt-1">Multiplicamos os números inteiros normais como se fossem números naturais:</p>
+                            <p class="text-xl font-bold text-indigo-900 mt-2 bg-white px-3 py-2 rounded-xl inline-block border border-amber-100" id="step1-calc"></p>
+                        </div>
+                    </div>
+
+                    <!-- Passo 2 -->
+                    <div class="p-4 bg-blue-50 rounded-2xl border border-blue-200 flex items-start gap-3">
+                        <span class="bg-blue-500 text-white w-7 h-7 rounded-full flex items-center justify-center font-bold shrink-0">2</span>
+                        <div>
+                            <h4 class="font-bold text-blue-900">Somar as Casas Decimais</h4>
+                            <p class="text-slate-600 text-sm mt-1">Contamos os números que estão à direita da vírgula nos dois fatores:</p>
+                            <ul class="list-disc list-inside text-sm text-slate-700 mt-2 space-y-1" id="step2-list">
+                                <!-- Preenchido dinamicamente -->
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Passo 3 -->
+                    <div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-200 flex items-start gap-3">
+                        <span class="bg-emerald-500 text-white w-7 h-7 rounded-full flex items-center justify-center font-bold shrink-0">3</span>
+                        <div>
+                            <h4 class="font-bold text-emerald-900">Posicionar a Vírgula no Resultado</h4>
+                            <p class="text-slate-600 text-sm mt-1">
+                                Começamos do fim do número inteiro obtido no Passo 1, andamos com a vírgula da **direita para a esquerda** e pomos a vírgula!
+                            </p>
+                            <div class="mt-3 bg-white p-4 rounded-xl border border-emerald-100 text-center">
+                                <span class="text-xs font-bold text-slate-400 block uppercase tracking-wider">Caminho da Vírgula</span>
+                                <div class="text-3xl font-bold text-emerald-600 flex justify-center items-center gap-1 mt-1" id="step3-visual-path">
+                                    <!-- Visual interativo do caminho da vírgula -->
+                                </div>
+                                <span class="text-sm text-emerald-700 font-semibold mt-2 block" id="step3-total-desc"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB: DIVISÃO (CHOCOLATES VISUAIS) ================= -->
+        <section id="tab-divisao" class="tab-content hidden animate-fadeIn">
+            <div class="bg-white rounded-3xl p-6 shadow-xl border-4 border-teal-200">
+                <!-- História Introdutória -->
+                <div class="bg-teal-50 border border-teal-100 p-4 rounded-2xl flex gap-4 items-center mb-6">
+                    <span class="text-4xl">🍫</span>
+                    <div class="text-sm">
+                        <p class="font-bold text-teal-900">O Problema dos Chocolates da Avó Joaquina!</p>
+                        A avó Joaquina tem **10 chocolates** para dividir igualmente por **8 netos**. Como fazer quando sobra chocolate? Vamos fatiá-los em décimos e ver o nascimento da vírgula!
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-2xl font-bold text-teal-800 flex items-center gap-2">
+                        <i class="fa-solid fa-cake-candles text-teal-500"></i>
+                        Simulador de Divisões Inteiras e Sobras
+                    </h3>
+                    <div class="flex gap-2">
+                        <button onclick="presetDivisao(10, 8)" class="text-xs bg-teal-100 hover:bg-teal-200 text-teal-800 font-bold py-1 px-3 rounded-lg">Avó Joaquina (10 ÷ 8)</button>
+                        <button onclick="presetDivisao(6, 5)" class="text-xs bg-teal-100 hover:bg-teal-200 text-teal-800 font-bold py-1 px-3 rounded-lg">Exemplo 6 ÷ 5</button>
+                    </div>
+                </div>
+
+                <!-- Simulador Controlador -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center bg-slate-50 p-4 rounded-2xl mb-6">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Chocolates (Dividendo)</label>
+                        <input type="number" id="sim-dividendo" value="10" min="1" max="50" class="w-full text-center text-lg font-bold p-2 rounded-xl border-2 border-teal-200">
+                    </div>
+                    <div class="text-center text-xl font-bold text-slate-400">÷</div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Netos (Divisor)</label>
+                        <input type="number" id="sim-divisor" value="8" min="1" max="20" class="w-full text-center text-lg font-bold p-2 rounded-xl border-2 border-teal-200">
+                    </div>
+                </div>
+
+                <div class="text-center mb-6">
+                    <button onclick="iniciarSimulacaoDivisao()" class="bg-teal-600 hover:bg-teal-700 text-white font-bold px-6 py-3 rounded-xl shadow-md transition-all active:scale-95">
+                        Iniciar Partilha Interativa 🍫✨
+                    </button>
+                </div>
+
+                <!-- Quadro de Simulação Ativa -->
+                <div id="sim-active-board" class="hidden border-2 border-teal-100 rounded-3xl overflow-hidden shadow-inner">
+                    <!-- Tabuleiro da Divisão -->
+                    <div class="grid grid-cols-1 md:grid-cols-2">
+                        
+                        <!-- Coluna 1: Chocolates Restantes -->
+                        <div class="p-6 bg-amber-50/50 border-r border-teal-50">
+                            <h4 class="font-bold text-amber-900 text-sm mb-3 uppercase tracking-wider flex items-center justify-between">
+                                <span>Chocolates / Sobras</span>
+                                <span id="sim-resto-label" class="bg-amber-200 text-amber-800 text-xs px-2 py-0.5 rounded"></span>
+                            </h4>
+                            <div id="sim-chocolate-display" class="flex flex-wrap gap-2 min-h-[120px] items-center justify-center p-4 bg-white/60 rounded-2xl border border-amber-100">
+                                <!-- Chocolates desenhados via JS -->
+                            </div>
+                        </div>
+
+                        <!-- Coluna 2: Crianças (Netos) -->
+                        <div class="p-6 bg-teal-50/30">
+                            <h4 class="font-bold text-teal-900 text-sm mb-3 uppercase tracking-wider">Netos (Cada um recebe...)</h4>
+                            <div id="sim-kids-display" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                <!-- Crianças e as suas fatias via JS -->
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Rodapé do Simulador (Controlos dos Passos) -->
+                    <div class="bg-slate-50 p-4 border-t border-teal-50 flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div class="text-sm font-semibold text-slate-600" id="sim-step-text">
+                            Clique em Iniciar!
+                        </div>
+                        <div class="flex gap-2">
+                            <button id="btn-sim-action" onclick="avancarPassoSimulacao()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-5 py-2 rounded-xl text-sm transition-all shadow flex items-center gap-1">
+                                <span>Distribuir Inteiros</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Divisão Matemática Escrita (Em Tempo Real) -->
+                    <div class="bg-slate-900 text-emerald-400 p-6 font-mono rounded-b-2xl text-center text-lg md:text-2xl relative">
+                        <span class="absolute top-2 left-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Algoritmo em Tempo Real</span>
+                        <div class="flex justify-center items-center gap-6 mt-2">
+                            <div class="text-right">
+                                <span id="math-dividendo" class="text-white font-bold">10</span>
+                                <div id="math-subtracao" class="text-slate-400 text-sm mt-1"></div>
+                            </div>
+                            <div class="border-l-4 border-t-4 border-emerald-400 pl-4 pt-1 text-left">
+                                <div class="text-slate-400 text-xs uppercase">Divisor</div>
+                                <div id="math-divisor" class="text-white font-bold">8</div>
+                                <div class="text-slate-400 text-xs uppercase mt-2">Quociente</div>
+                                <div id="math-quociente" class="text-yellow-300 font-bold">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB: QUIZ (ARENA DE DESAFIOS) ================= -->
+        <section id="tab-quiz" class="tab-content hidden animate-fadeIn">
+            <div class="bg-white rounded-3xl p-6 shadow-xl border-4 border-purple-200">
+                
+                <!-- Barra Superior de Gamificação -->
+                <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b-2 border-slate-100 mb-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-2xl" id="avatar-icon">🧑‍🚀</div>
+                        <div>
+                            <div class="text-xs text-slate-400 font-bold uppercase">Classificação</div>
+                            <h4 class="font-bold text-purple-700 text-sm md:text-base" id="rank-name">Explorador Aprendiz</h4>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="bg-amber-100 text-amber-800 px-4 py-2 rounded-2xl font-bold text-sm md:text-base flex items-center gap-1">
+                            <i class="fa-solid fa-star text-amber-500 animate-pulse"></i>
+                            Pontos: <span id="score-counter" class="ml-1">0</span>
+                        </div>
+                        <div class="bg-emerald-100 text-emerald-800 px-4 py-2 rounded-2xl font-bold text-sm md:text-base flex items-center gap-1">
+                            <i class="fa-solid fa-fire text-orange-500"></i>
+                            Recorde: <span id="streak-counter" class="ml-1">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pergunta do Quiz -->
+                <div class="bg-slate-50 p-6 md:p-8 rounded-3xl border-2 border-slate-100 text-center mb-6 relative">
+                    <div class="absolute top-3 left-4 bg-purple-500 text-white text-xs px-3 py-1 rounded-full font-bold">
+                        Desafio Ativo
+                    </div>
+                    <h3 class="text-xl md:text-3xl font-bold text-slate-800 mt-4 mb-4" id="quiz-question">
+                        Quanto é 1,2 × 4?
+                    </h3>
+                    <p class="text-xs text-slate-400" id="quiz-tip">Dica: podes usar uma folha de rascunho antes de responder!</p>
+                </div>
+
+                <!-- Caixa de Resposta e Verificação -->
+                <div class="max-w-md mx-auto space-y-4">
+                    <div class="flex gap-2">
+                        <input type="text" id="quiz-answer" placeholder="Escreve a tua resposta (ex: 4,8)" class="flex-grow text-center text-xl font-bold p-3 rounded-2xl border-4 border-purple-200 focus:border-purple-500 focus:outline-none transition-colors">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="verificarQuiz()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-2xl shadow-md transition-all active:scale-95">
+                            Verificar Resposta 🎓
+                        </button>
+                        <button onclick="pularPergunta()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold py-3 rounded-2xl transition-all">
+                            Saltar Desafio ➡️
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Balão de Feedback de Resposta -->
+                <div id="quiz-feedback-box" class="hidden mt-6 p-4 rounded-2xl text-center font-bold text-sm md:text-base border-2">
+                    <!-- Feedback dinâmico -->
+                </div>
+
+                <!-- Guia de Conquistas -->
+                <div class="mt-8 pt-6 border-t border-slate-100">
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 text-center">Conquistas Disponíveis</h4>
+                    <div class="grid grid-cols-3 gap-2 text-center">
+                        <div id="badge-1" class="p-3 bg-slate-50 rounded-2xl opacity-40 transition-opacity duration-300">
+                            <span class="text-2xl block">🌟</span>
+                            <span class="text-xs font-bold text-slate-600">Primeiro Acerto</span>
+                        </div>
+                        <div id="badge-2" class="p-3 bg-slate-50 rounded-2xl opacity-40 transition-opacity duration-300">
+                            <span class="text-2xl block">🔥</span>
+                            <span class="text-xs font-bold text-slate-600">Sequência de 5</span>
+                        </div>
+                        <div id="badge-3" class="p-3 bg-slate-50 rounded-2xl opacity-40 transition-opacity duration-300">
+                            <span class="text-2xl block">👑</span>
+                            <span class="text-xs font-bold text-slate-600">Mestre dos Decimais</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="bg-slate-800 text-slate-400 py-6 px-4 text-center text-xs border-t border-slate-700 mt-8 rounded-t-[2rem]">
+        <p class="font-medium text-slate-300 mb-1">Mestre dos Decimais © 2026</p>
+        <p>Criado de forma interativa com base no Guia Prático de Multiplicação e Divisão com Números Decimais.</p>
+    </footer>
+
+    <!-- Sistema JavaScript de Dinâmica, Simulação e Exercícios -->
+    <script>
+        // --- CONSTANTES & CONFIGURAÇÕES INICIAIS ---
+        let currentTab = 'multiplicacao';
         
-        <div class="interactive-zone">
-            <div class="math-box">
-                <select id="div1" onchange="atualizarLaboratorioDiv()">
-                    <option value="56.4">56,4</option>
-                    <option value="22.22">22,22</option>
-                    <option value="6">6</option>
-                </select>
-                <span>÷</span>
-                <select id="div2" onchange="atualizarLaboratorioDiv()">
-                    <option value="6">6</option>
-                    <option value="2.2">2,2</option>
-                    <option value="5">5</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="explanation-bubble" id="divExplanation">
-            </div>
-    </div>
-
-    <div class="card quiz-container">
-        <h2>🏆 3. Desafio do Conhecimento (Exercício Prático)</h2>
-        <p>Resolva os desafios abaixo para ganhar pontos e conquistar suas insígnias de Matemática!</p>
-        
-        <div id="quiz-box">
-            <div class="question" id="quiz-question">Carregando pergunta...</div>
-            <div style="margin-bottom: 15px;">
-                <input type="number" id="quiz-answer" step="0.001" placeholder="Sua resposta" style="width: 160px; font-size: 1.5rem;">
-            </div>
-            <button class="btn btn-success" onclick="verificarResposta()">Verificar Resposta</button>
-            <button class="btn btn-primary" onclick="gerarPergunta()">Próxima Pergunta ➡️</button>
+        // --- LÓGICA DO TAB SWITCHER ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
             
-            <div class="feedback" id="quiz-feedback"></div>
-        </div>
-
-        <div class="score-board">
-            <div>Pontuação: <strong id="score" style="color: var(--primary);">0</strong></div>
-            <div>Medalhas: <span id="badge-icon" class="badge">🥚</span> <span id="badge-name" style="font-weight: bold;">Iniciante</span></div>
-        </div>
-    </div>
-
-</div>
-
-<script>
-    // --- LÓGICA DO MÓDULO 1: MULTIPLICAÇÃO ---
-    function contarCasasDecimais(num) {
-        const match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
-        if (!match) { return 0; }
-        return Math.max(0, (match[1] ? match[1].length : 0) - (match[2] ? +match[2] : 0));
-    }
-
-    function calcularLaboratorioMult() {
-        const n1 = parseFloat(document.getElementById('mult1').value) || 0;
-        const n2 = parseFloat(document.getElementById('mult2').value) || 0;
-        
-        const resultado = (n1 * n2).toFixed(contarCasasDecimais(n1) + contarCasasDecimais(n2));
-        document.getElementById('multResult').innerText = parseFloat(resultado).toLocaleString('pt-BR', {maximumFractionDigits: 10});
-
-        const casasN1 = contarCasasDecimais(n1);
-        const casasN2 = contarCasasDecimais(n2);
-        const totalCasas = casasN1 + casasN2;
-
-        // Representação sem vírgula
-        const n1SemV = Math.round(n1 * Math.pow(10, casasN1));
-        const n2SemV = Math.round(n2 * Math.pow(10, casasN2));
-        const respSemV = n1SemV * n2SemV;
-
-        document.getElementById('multExplanation').innerHTML = `
-            🔍 <strong>Passo a passo do que está acontecendo:</strong><br>
-            1. Primeiro, fazemos a conta normal ignorando as vírgulas: <code>${n1SemV} × ${n2SemV} = ${respSemV}</code>.<br>
-            2. Agora contamos as casas decimais à direita da vírgula:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;• O primeiro número tem <span class="highlight">${casasN1} casa(s)</span>.<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;• O segundo número tem <span class="highlight">${casasN2} casa(s)</span>.<br>
-            3. <strong>Somamos as casas:</strong> ${casasN1} + ${casasN2} = <span class="highlight">${totalCasas} casa(s) no total</span>.<br>
-            4. Pegamos o número <code>${respSemV}</code> e andamos com a vírgula <span class="highlight">${totalCasas} vezes para a esquerda</span> a partir do final. Resultado final: <strong>${parseFloat(resultado).toLocaleString('pt-BR')}</strong>!
-        `;
-    }
-
-    // --- LÓGICA DO MÓDULO 2: DIVISÃO ---
-    function atualizarLaboratorioDiv() {
-        const n1 = parseFloat(document.getElementById('div1').value);
-        const n2 = parseFloat(document.getElementById('div2').value);
-        
-        const casasN1 = contarCasasDecimais(n1);
-        const casasN2 = contarCasasDecimais(n2);
-        const maxCasas = Math.max(casasN1, casasN2);
-        const multiplicador = Math.pow(10, maxCasas);
-
-        const n1Inteiro = n1 * multiplicador;
-        const n2Inteiro = n2 * multiplicador;
-        const resultadoFinal = (n1 / n2).toFixed(2);
-
-        let textoMultiplicar = `Como a maior quantidade de casas decimais é <strong>${maxCasas}</strong>, vamos multiplicar os dois lados por <strong>${multiplicador}</strong>!`;
-        if (maxCasas === 0) {
-            textoMultiplicar = `Os dois números já são inteiros! Não precisamos eliminar nenhuma vírgula.`;
+            // Atualização dos estilos dos botões
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn py-3 px-2 md:px-4 rounded-2xl font-bold text-xs md:text-base flex flex-col md:flex-row items-center justify-center gap-2 transition-all shadow-md bg-white text-slate-600 hover:bg-indigo-50";
+            });
+            
+            const activeBtn = document.getElementById(`btn-tab-${tabId}`);
+            if (tabId === 'multiplicacao') {
+                activeBtn.className = "tab-btn py-3 px-2 md:px-4 rounded-2xl font-bold text-xs md:text-base flex flex-col md:flex-row items-center justify-center gap-2 transition-all shadow-md bg-indigo-600 text-white transform -translate-y-1";
+            } else if (tabId === 'divisao') {
+                activeBtn.className = "tab-btn py-3 px-2 md:px-4 rounded-2xl font-bold text-xs md:text-base flex flex-col md:flex-row items-center justify-center gap-2 transition-all shadow-md bg-teal-600 text-white transform -translate-y-1";
+            } else if (tabId === 'quiz') {
+                activeBtn.className = "tab-btn py-3 px-2 md:px-4 rounded-2xl font-bold text-xs md:text-base flex flex-col md:flex-row items-center justify-center gap-2 transition-all shadow-md bg-purple-600 text-white transform -translate-y-1";
+            }
+            
+            currentTab = tabId;
         }
 
-        document.getElementById('divExplanation').innerHTML = `
-            ⚡ <strong>Como transformar em uma conta sem vírgula:</strong><br>
-            • Conta original: <code>${n1.toLocaleString('pt-BR')} ÷ ${n2.toLocaleString('pt-BR')}</code><br>
-            • ${textoMultiplicar}<br>
-            • A conta real e oficial vira: <span class="highlight">${n1Inteiro} ÷ ${n2Inteiro}</span><br>
-            • Dividindo normalmente, o resultado (quociente) é: <strong style="color:var(--success); font-size:1.2rem;">${parseFloat(resultadoFinal).toLocaleString('pt-BR')}</strong> 
-            ${n1Inteiro % n2Inteiro !== 0 ? ' *(com quociente decimal após a sobra!)*' : ' *(divisão exata!)*'}
-        `;
-    }
-
-    // --- LÓGICA DO MÓDULO 3: QUIZ (EXERCÍCIO) ---
-    let perguntaAtual = {};
-    let pontuacao = 0;
-
-    const bancoPerguntas = [
-        { tipo: 'mult', n1: 1.2, n2: 4, pergunta: "Quanto é 1,2 × 4?", resposta: 4.8 },
-        { tipo: 'mult', n1: 0.5, n2: 0.6, pergunta: "Pense nas casas decimais: Quanto é 0,5 × 0,6?", resposta: 0.3 },
-        { tipo: 'mult', n1: 2.5, n2: 3, pergunta: "Dona Maria comprou 3 barras de doce por R$ 2,50 cada. Quanto ela gastou? (Calcule 2,5 × 3)", resposta: 7.5 },
-        { tipo: 'div_q', n1: 6, n2: 5, pergunta: "Se você dividir 6 chocolates para 5 amigos, quanto cada um ganha em números decimais? (6 ÷ 5)", resposta: 1.2 },
-        { tipo: 'div_v', n1: 4.8, n2: 2, pergunta: "Se eliminarmos a vírgula multiplicando por 10, a conta 4,8 ÷ 2 vira 48 ÷ 20. Qual o resultado?", resposta: 2.4 },
-        { tipo: 'mult', n1: 12.5, n2: 10, pergunta: "Regra rápida: Quanto dá 12,5 multiplicado por 10 (andar uma casa para a direita)?", resposta: 125 },
-        { tipo: 'div_q', n1: 10, n2: 4, pergunta: "Dona Joaquina quer dividir 10 barras de chocolate igualmente entre 4 netos. Quanto ganha cada um? (10 ÷ 4)", resposta: 2.5 }
-    ];
-
-    function gerarPergunta() {
-        document.getElementById('quiz-feedback').className = 'feedback';
-        document.getElementById('quiz-feedback').innerText = '';
-        document.getElementById('quiz-answer').value = '';
-        
-        // Sorteia uma pergunta do banco
-        const indice = Math.floor(Math.random() * bancoPerguntas.length);
-        perguntaAtual = bancoPerguntas[indice];
-        
-        document.getElementById('quiz-question').innerText = perguntaAtual.pergunta;
-    }
-
-    function verificarResposta() {
-        const respUsuario = parseFloat(document.getElementById('quiz-answer').value);
-        const feedbackDiv = document.getElementById('quiz-feedback');
-        
-        if (isNaN(respUsuario)) {
-            feedbackDiv.className = 'feedback wrong';
-            feedbackDiv.innerText = '⚠️ Por favor, digite um número antes de verificar!';
-            return;
+        // --- SISTEMA AUXILIAR DE CONTAR CASAS DECIMAIS ---
+        function getDecimalPlaces(num) {
+            const str = num.toString();
+            if (str.indexOf('.') !== -1) {
+                return str.split('.')[1].length;
+            }
+            if (str.indexOf(',') !== -1) {
+                return str.split(',')[1].length;
+            }
+            return 0;
         }
 
-        // Evitar problemas de precisão do JS usando aproximação muito fina
-        if (Math.abs(respUsuario - perguntaAtual.resposta) < 0.01) {
-            feedbackDiv.className = 'feedback correct';
-            feedbackDiv.innerText = '🎉 Incrível! Você acertou em cheio!';
-            pontuacao += 10;
-        } else {
-            feedbackDiv.className = 'feedback wrong';
-            feedbackDiv.innerText = `💥 Quase lá! A resposta correta era ${perguntaAtual.resposta.toLocaleString('pt-BR')}. Lembre-se das regrinhas da vírgula!`;
-            if(pontuacao > 0) pontuacao -= 5;
+        // --- LÓGICA DO LABORATÓRIO DE MULTIPLICAÇÃO ---
+        function processarLaboratorioMult() {
+            const input1 = document.getElementById('lab-m1').value.replace(',', '.');
+            const input2 = document.getElementById('lab-m2').value.replace(',', '.');
+            
+            const f1 = parseFloat(input1);
+            const f2 = parseFloat(input2);
+
+            if (isNaN(f1) || isNaN(f2)) {
+                return;
+            }
+
+            // Exibir o painel de passos
+            const stepsBox = document.getElementById('mult-steps-box');
+            stepsBox.classList.remove('hidden');
+
+            const dp1 = getDecimalPlaces(f1);
+            const dp2 = getDecimalPlaces(f2);
+            const totalDp = dp1 + dp2;
+
+            // Converter para inteiros
+            const int1 = Math.round(f1 * Math.pow(10, dp1));
+            const int2 = Math.round(f2 * Math.pow(10, dp2));
+            const intResult = int1 * int2;
+            const finalResult = (f1 * f2).toFixed(totalDp);
+
+            // Passo 1 texto
+            document.getElementById('step1-calc').innerHTML = `${int1} × ${int2} = <span class="text-indigo-600 font-extrabold">${intResult}</span>`;
+
+            // Passo 2 lista
+            document.getElementById('step2-list').innerHTML = `
+                <li>O fator <strong>${f1.toString().replace('.', ',')}</strong> tem <span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-bold">${dp1} casa(s) decimais</span> à direita da vírgula.</li>
+                <li>O fator <strong>${f2.toString().replace('.', ',')}</strong> tem <span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-bold">${dp2} casa(s) decimais</span> à direita da vírgula.</li>
+                <li class="mt-2 font-bold text-slate-800 text-base">Soma das casas: ${dp1} + ${dp2} = <span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-extrabold">${totalDp} casa(s) no total!</span></li>
+            `;
+
+            // Passo 3 visualização interativa do movimento da vírgula
+            const visualPath = document.getElementById('step3-visual-path');
+            visualPath.innerHTML = '';
+            
+            // Construir o número sem vírgula como string
+            const resultStr = intResult.toString();
+            // Preencher com zeros se o número for menor do que o total de casas decimais necessárias
+            let paddedStr = resultStr;
+            while (paddedStr.length <= totalDp) {
+                paddedStr = '0' + paddedStr;
+            }
+
+            const commaIndex = paddedStr.length - totalDp;
+            
+            // Renderização das letras/algarismos
+            for (let i = 0; i < paddedStr.length; i++) {
+                if (i === commaIndex) {
+                    const commaSpan = document.createElement('span');
+                    commaSpan.innerText = ',';
+                    commaSpan.className = 'text-red-500 font-black text-4xl animate-bounce mx-0.5';
+                    visualPath.appendChild(commaSpan);
+                }
+                const digitSpan = document.createElement('span');
+                digitSpan.innerText = paddedStr[i];
+                digitSpan.className = 'bg-slate-100 border-2 border-slate-200 rounded-lg px-2 py-1 text-slate-800 shadow-sm font-bold';
+                visualPath.appendChild(digitSpan);
+            }
+
+            document.getElementById('step3-total-desc').innerText = `O resultado final é ${parseFloat(finalResult).toString().replace('.', ',')}!`;
+            
+            // Auto scroll suave para mostrar os passos
+            stepsBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
-        document.getElementById('score').innerText = pontuacao;
-        atualizarMedalha();
-    }
 
-    function atualizarMedalha() {
-        const icon = document.getElementById('badge-icon');
-        const name = document.getElementById('badge-name');
-        
-        icon.classList.add('bounce');
-        setTimeout(() => icon.classList.remove('bounce'), 300);
+        // --- LÓGICA DO SIMULADOR DE DIVISÃO (CHOCOLATES) ---
+        let simDividendo = 10;
+        let simDivisor = 8;
+        let simStep = 0; // 0: Start, 1: Distribute wholes, 2: Slice remainder (tenths), 3: Distribute tenths, 4: Slice next remainder (hundredths), 5: Distribute hundredths, 6: Finished
+        let kidsShares = [];
+        let curRemainder = 0;
+        let visualChocolatesCount = 0;
+        let decimalQuotientStr = "0";
 
-        if (pontuacao >= 50) {
-            icon.innerText = '👑';
-            name.innerText = 'Rei/Rainha dos Decimais';
-            name.style.color = '#9B59B6';
-        } else if (pontuacao >= 30) {
-            icon.innerText = '🥇';
-            name.innerText = 'Matemático de Ouro';
-            name.style.color = var(--secondary);
-        } else if (pontuacao >= 10) {
-            icon.innerText = '🚀';
-            name.innerText = 'Aprendiz Veloz';
-            name.style.color = var(--primary);
-        } else {
-            icon.innerText = '🥚';
-            name.innerText = 'Iniciante';
-            name.style.color = '#7F8C8D';
+        function presetDivisao(divd, divs) {
+            document.getElementById('sim-dividendo').value = divd;
+            document.getElementById('sim-divisor').value = divs;
+            iniciarSimulacaoDivisao();
         }
-    }
 
-    // Inicializar os laboratórios ao carregar a página
-    calcularLaboratorioMult();
-    atualizarLaboratorioDiv();
-    gerarPergunta();
-</script>
+        function iniciarSimulacaoDivisao() {
+            simDividendo = parseInt(document.getElementById('sim-dividendo').value);
+            simDivisor = parseInt(document.getElementById('sim-divisor').value);
 
+            if (isNaN(simDividendo) || isNaN(simDivisor) || simDividendo < 1 || simDivisor < 1) {
+                return;
+            }
+
+            document.getElementById('sim-active-board').classList.remove('hidden');
+            
+            simStep = 0;
+            curRemainder = simDividendo;
+            kidsShares = Array(simDivisor).fill(0);
+            visualChocolatesCount = simDividendo;
+            decimalQuotientStr = "";
+
+            // Atualização inicial do algoritmo na caixa escura
+            document.getElementById('math-dividendo').innerText = simDividendo;
+            document.getElementById('math-divisor').innerText = simDivisor;
+            document.getElementById('math-quociente').innerText = "0";
+            document.getElementById('math-subtracao').innerText = "";
+
+            renderChocolates(curRemainder, false);
+            renderKids();
+
+            definirPasso(1);
+        }
+
+        function renderChocolates(amount, isSlices, activeSlicesCount = 0) {
+            const container = document.getElementById('sim-chocolate-display');
+            container.innerHTML = '';
+            
+            if (amount === 0 && activeSlicesCount === 0) {
+                container.innerHTML = '<span class="text-slate-400 font-bold text-sm">Sem sobras! Divisão concluída. 🎉</span>';
+                return;
+            }
+
+            // Se for fatias, mostramos pedaços mais pequenos de chocolate
+            if (isSlices) {
+                for (let i = 0; i < activeSlicesCount; i++) {
+                    const slice = document.createElement('div');
+                    slice.className = 'w-6 h-10 bg-amber-700 rounded border-2 border-amber-900 shadow-sm flex items-center justify-center text-[10px] text-amber-200 font-bold';
+                    slice.innerText = '•';
+                    container.appendChild(slice);
+                }
+            } else {
+                for (let i = 0; i < amount; i++) {
+                    const choco = document.createElement('div');
+                    choco.className = 'w-12 h-16 bg-amber-800 rounded-lg border-4 border-amber-950 shadow-md relative flex flex-col justify-between p-1 shrink-0';
+                    choco.innerHTML = `
+                        <div class="grid grid-cols-2 gap-0.5 h-full">
+                            <div class="bg-amber-700 rounded-sm"></div>
+                            <div class="bg-amber-700 rounded-sm"></div>
+                            <div class="bg-amber-700 rounded-sm"></div>
+                            <div class="bg-amber-700 rounded-sm"></div>
+                        </div>
+                    `;
+                    container.appendChild(choco);
+                }
+            }
+            
+            // Etiqueta de quantidade restante
+            document.getElementById('sim-resto-label').innerText = isSlices ? `${activeSlicesCount} fatia(s)` : `${amount} chocolate(s)`;
+        }
+
+        function renderKids() {
+            const container = document.getElementById('sim-kids-display');
+            container.innerHTML = '';
+            
+            const avatarList = ["👦", "👧", "👨", "👩", "👶", "👱", "👵", "👴"];
+
+            for (let i = 0; i < simDivisor; i++) {
+                const kid = document.createElement('div');
+                kid.className = 'bg-white p-3 rounded-2xl border-2 border-slate-100 shadow-sm text-center flex flex-col items-center';
+                
+                const avatar = avatarList[i % avatarList.length];
+                
+                // Formatação do valor individual
+                let valueText = kidsShares[i].toFixed(3).replace(/\.?0+$/, ''); // limpa zeros desnecessários
+                if (valueText === "0") valueText = "Nada";
+                else valueText = valueText.replace('.', ',') + " un";
+
+                kid.innerHTML = `
+                    <span class="text-3xl">${avatar}</span>
+                    <span class="text-xs font-bold text-slate-500 mt-1">Neto ${i+1}</span>
+                    <span class="text-xs bg-teal-100 text-teal-800 px-2 py-0.5 rounded-full font-bold mt-2">${valueText}</span>
+                `;
+                container.appendChild(kid);
+            }
+        }
+
+        function definirPasso(stepNum) {
+            simStep = stepNum;
+            const btn = document.getElementById('btn-sim-action');
+            const stepText = document.getElementById('sim-step-text');
+
+            if (stepNum === 1) {
+                stepText.innerHTML = `👋 <strong>Fase 1:</strong> Vamos dividir os chocolates inteiros por cada neto!`;
+                btn.innerHTML = `<span>Dividir Inteiros</span> <i class="fa-solid fa-cookie"></i>`;
+                btn.className = "bg-teal-600 hover:bg-teal-700 text-white font-bold px-5 py-2 rounded-xl text-sm transition-all shadow";
+            } else if (stepNum === 2) {
+                stepText.innerHTML = `👀 Sobraram <strong>${curRemainder}</strong> chocolates! Temos de fatiar cada um em <strong>10 partes</strong> (décimos). No quadro, isto acrescenta uma <strong class="text-red-500">vírgula (,)</strong> no resultado!`;
+                btn.innerHTML = `<span>Fatiar Sobras (Pôr Vírgula)</span> <i class="fa-solid fa-scissors"></i>`;
+                btn.className = "bg-amber-500 hover:bg-amber-600 text-white font-bold px-5 py-2 rounded-xl text-sm transition-all shadow animate-bounce";
+            } else if (stepNum === 3) {
+                stepText.innerHTML = `Distribui os décimos (fatias) pelos netos!`;
+                btn.innerHTML = `<span>Distribuir Décimos</span> <i class="fa-solid fa-share"></i>`;
+                btn.className = "bg-teal-600 hover:bg-teal-700 text-white font-bold px-5 py-2 rounded-xl text-sm transition-all shadow";
+            } else if (stepNum === 4) {
+                stepText.innerHTML = `Ainda sobrou resto! Vamos fatiar os restos em centésimos.`;
+                btn.innerHTML = `<span>Fatiar Novamente</span> <i class="fa-solid fa-scissors"></i>`;
+                btn.className = "bg-amber-500 hover:bg-amber-600 text-white font-bold px-5 py-2 rounded-xl text-sm transition-all shadow";
+            } else if (stepNum === 5) {
+                stepText.innerHTML = `Distribui os centésimos pelos netos!`;
+                btn.innerHTML = `<span>Distribuir Centésimos</span> <i class="fa-solid fa-share"></i>`;
+                btn.className = "bg-teal-600 hover:bg-teal-700 text-white font-bold px-5 py-2 rounded-xl text-sm transition-all shadow";
+            } else if (stepNum === 6) {
+                stepText.innerHTML = `🎉 <strong>Sucesso!</strong> A divisão é exata. Cada neto recebeu exatamente <strong>${(simDividendo/simDivisor).toString().replace('.', ',')}</strong> chocolates!`;
+                btn.innerHTML = `<span>Concluído!</span> <i class="fa-solid fa-circle-check"></i>`;
+                btn.className = "bg-slate-400 text-white font-bold px-5 py-2 rounded-xl text-sm cursor-not-allowed";
+            }
+        }
+
+        function avancarPassoSimulacao() {
+            if (simStep === 1) {
+                // Divisão inteira
+                const shareInt = Math.floor(curRemainder / simDivisor);
+                if (shareInt > 0) {
+                    for (let i = 0; i < simDivisor; i++) {
+                        kidsShares[i] += shareInt;
+                    }
+                    const subtraido = shareInt * simDivisor;
+                    curRemainder -= subtraido;
+
+                    document.getElementById('math-subtracao').innerText = `- ${subtraido}`;
+                    document.getElementById('math-quociente').innerText = shareInt;
+                } else {
+                    document.getElementById('math-quociente').innerText = "0";
+                }
+
+                renderChocolates(curRemainder, false);
+                renderKids();
+
+                if (curRemainder > 0) {
+                    definirPasso(2);
+                } else {
+                    definirPasso(6);
+                }
+            } 
+            else if (simStep === 2) {
+                // Fatiar sobras: transforma unidades em décimos (unidade * 10)
+                const fatias = curRemainder * 10;
+                
+                // Mostrar a vírgula no quociente matemático
+                let currentQuociente = document.getElementById('math-quociente').innerText;
+                decimalQuotientStr = currentQuociente + ",";
+                document.getElementById('math-quociente').innerText = decimalQuotientStr;
+                
+                // No algoritmo escrito, pomos o 0 à direita do dividendo/resto
+                document.getElementById('math-dividendo').innerText = fatias;
+                document.getElementById('math-subtracao').innerText = "";
+
+                renderChocolates(0, true, fatias);
+                definirPasso(3);
+            } 
+            else if (simStep === 3) {
+                // Distribuir fatias (décimos)
+                const fatiasDisponiveis = curRemainder * 10;
+                const shareDec = Math.floor(fatiasDisponiveis / simDivisor);
+                
+                for (let i = 0; i < simDivisor; i++) {
+                    kidsShares[i] += (shareDec / 10);
+                }
+
+                const subtraido = shareDec * simDivisor;
+                const restoFatias = fatiasDisponiveis - subtraido;
+                curRemainder = restoFatias / 10;
+
+                // Atualizar Quociente
+                decimalQuotientStr += shareDec;
+                document.getElementById('math-quociente').innerText = decimalQuotientStr;
+                document.getElementById('math-dividendo').innerText = fatiasDisponiveis;
+                document.getElementById('math-subtracao').innerText = `- ${subtraido}`;
+
+                renderChocolates(0, true, restoFatias);
+                renderKids();
+
+                if (restoFatias > 0) {
+                    definirPasso(4);
+                } else {
+                    definirPasso(6);
+                }
+            } 
+            else if (simStep === 4) {
+                // Centésimos: multiplicar o resto das fatias por 10 novamente
+                const fatiasDisponiveis = curRemainder * 100; // centésimos
+                
+                document.getElementById('math-dividendo').innerText = fatiasDisponiveis;
+                document.getElementById('math-subtracao').innerText = "";
+
+                renderChocolates(0, true, fatiasDisponiveis);
+                definirPasso(5);
+            } 
+            else if (simStep === 5) {
+                // Distribuir centésimos
+                const fatiasDisponiveis = curRemainder * 100;
+                const shareCent = Math.floor(fatiasDisponiveis / simDivisor);
+
+                for (let i = 0; i < simDivisor; i++) {
+                    kidsShares[i] += (shareCent / 100);
+                }
+
+                const subtraido = shareCent * simDivisor;
+                const restoCent = fatiasDisponiveis - subtraido;
+                curRemainder = restoCent / 100;
+
+                // Atualizar Quociente
+                decimalQuotientStr += shareCent;
+                document.getElementById('math-quociente').innerText = decimalQuotientStr;
+                document.getElementById('math-dividendo').innerText = fatiasDisponiveis;
+                document.getElementById('math-subtracao').innerText = `- ${subtraido}`;
+
+                renderChocolates(0, true, restoCent);
+                renderKids();
+
+                definirPasso(6);
+            }
+        }
+
+
+        // --- LÓGICA DO JOGO DE PERGUNTAS (ARENA QUIZ) ---
+        let score = 0;
+        let streak = 0;
+        let activeQuestionObj = {};
+
+        const poolDeExercicios = [
+            { q: "Se a Rita comprar 3 canetas a 1,20 € cada uma, quanto vai gastar? (Multiplica 1,20 × 3)", a: "3,6", tip: "Ignora a vírgula para fazer 120 × 3 = 360. Depois, conta duas casas decimais!" },
+            { q: "Quanto é 2,5 × 4?", a: "10", tip: "Dica: 25 × 4 é 100. Põe uma casa decimal no resultado!" },
+            { q: "Se dividirmos 5 metros de fita igualmente por 2 pessoas, quanto recebe cada uma?", a: "2,5", tip: "Faz 5 ÷ 2. Quando sobrar 1, transforma-o em 10 décimos, põe a vírgula e divide por 2!" },
+            { q: "Calcula: 0,3 × 0,4", a: "0,12", tip: "Cuidado! 3 × 4 = 12. Mas como temos duas casas decimais no total, a resposta precisa de duas casas!" },
+            { q: "Uma caixa tem 10 caixas mais pequenas lá dentro. Se cada uma pesar 1,25 kg, qual é o peso total?", a: "12,5", tip: "Multiplicar por 10 faz a vírgula saltar apenas UMA casa para a direita!" },
+            { q: "Quanto dá a divisão exata de 6 ÷ 4?", a: "1,5", tip: "Divide 6 por 4. Sobram 2. Transforma o 2 em 20 décimos e põe a vírgula!" },
+            { q: "Calcula: 12,3 × 100", a: "1230", tip: "Multiplicar por 100 faz a vírgula saltar DUAS casas para a direita!" },
+            { q: "Calcula a divisão: 120 ÷ 100", a: "1,2", tip: "Dividir por 100 faz a vírgula invisível no fim do 120 andar DUAS casas para a ESQUERDA!" }
+        ];
+
+        function carregarNovaPergunta() {
+            // Limpa o feedback anterior
+            const feed = document.getElementById('quiz-feedback-box');
+            feed.className = "hidden";
+            document.getElementById('quiz-answer').value = "";
+
+            const randomIndex = Math.floor(Math.random() * poolDeExercicios.length);
+            activeQuestionObj = poolDeExercicios[randomIndex];
+
+            document.getElementById('quiz-question').innerText = activeQuestionObj.q;
+            document.getElementById('quiz-tip').innerText = `Dica: ${activeQuestionObj.tip}`;
+        }
+
+        function verificarQuiz() {
+            const rawAns = document.getElementById('quiz-answer').value.trim().replace(',', '.');
+            const targetAns = activeQuestionObj.a.replace(',', '.');
+            
+            const feed = document.getElementById('quiz-feedback-box');
+
+            if (rawAns === "") {
+                feed.className = "mt-6 p-4 rounded-2xl text-center font-bold text-sm md:text-base border-2 bg-amber-100 text-amber-800 border-amber-300 block";
+                feed.innerHTML = "⚠️ Escreve uma resposta antes de tentares!";
+                return;
+            }
+
+            if (parseFloat(rawAns) === parseFloat(targetAns)) {
+                // Resposta Correta
+                feed.className = "mt-6 p-4 rounded-2xl text-center font-bold text-sm md:text-base border-2 bg-emerald-100 text-emerald-800 border-emerald-300 block";
+                feed.innerHTML = "🎉 Absolutamente correto! És um prodígio dos decimais! +10 Pontos";
+                
+                score += 10;
+                streak++;
+                
+                triggerBadgeCheck();
+            } else {
+                // Resposta Errada
+                feed.className = "mt-6 p-4 rounded-2xl text-center font-bold text-sm md:text-base border-2 bg-red-100 text-red-800 border-red-300 block";
+                feed.innerHTML = `❌ Oh, quase lá! A resposta correta é ${activeQuestionObj.a.replace('.', ',')}. Olha a dica de rascunho de cima!`;
+                
+                streak = 0;
+            }
+
+            document.getElementById('score-counter').innerText = score;
+            document.getElementById('streak-counter').innerText = streak;
+            atualizarRank();
+        }
+
+        function pularPergunta() {
+            carregarNovaPergunta();
+        }
+
+        function atualizarRank() {
+            const rank = document.getElementById('rank-name');
+            const avatar = document.getElementById('avatar-icon');
+
+            if (score >= 100) {
+                rank.innerText = "Rei/Rainha da Matemática 👑";
+                avatar.innerText = "🧙‍♂️";
+                rank.className = "font-bold text-purple-900 text-sm md:text-base";
+            } else if (score >= 50) {
+                rank.innerText = "Matemático de Ouro 🥇";
+                avatar.innerText = "🚀";
+                rank.className = "font-bold text-indigo-700 text-sm md:text-base";
+            } else if (score >= 20) {
+                rank.innerText = "Explorador de Vírgulas 🔍";
+                avatar.innerText = "🧑‍🚀";
+                rank.className = "font-bold text-teal-700 text-sm md:text-base";
+            } else {
+                rank.innerText = "Explorador Aprendiz";
+                avatar.innerText = "🥚";
+                rank.className = "font-bold text-slate-500 text-sm md:text-base";
+            }
+        }
+
+        function triggerBadgeCheck() {
+            if (score >= 10) {
+                const b1 = document.getElementById('badge-1');
+                b1.className = "p-3 bg-amber-50 rounded-2xl border-2 border-amber-300 font-semibold shadow-sm";
+            }
+            if (streak >= 5) {
+                const b2 = document.getElementById('badge-2');
+                b2.className = "p-3 bg-amber-50 rounded-2xl border-2 border-amber-300 font-semibold shadow-sm";
+            }
+            if (score >= 100) {
+                const b3 = document.getElementById('badge-3');
+                b3.className = "p-3 bg-amber-50 rounded-2xl border-2 border-amber-300 font-semibold shadow-sm animate-bounce";
+            }
+        }
+
+        // --- INICIALIZAÇÃO AUTOMÁTICA ---
+        window.onload = function() {
+            processarLaboratorioMult();
+            iniciarSimulacaoDivisao();
+            carregarNovaPergunta();
+        };
+
+    </script>
 </body>
 </html>
